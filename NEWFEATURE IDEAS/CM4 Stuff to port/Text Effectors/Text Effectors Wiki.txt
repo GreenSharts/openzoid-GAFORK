@@ -1,0 +1,97 @@
+Text effectors are a way to easily add complex custom animations to 2D and 3D text. They are commonly used for animating individual characters without the need to manually add keyframes to each one separately.
+
+How do they work?
+Text effectors are stackable logic for describing the properties of individual characters within a text object. Gen4 provides easy-to-use templates that can create a large variety of animations.
+
+How to add a text effector
+2D
+Drag a text clip to the timeline from the types panel
+Double click the text clip to edit
+Select the text in the top left
+Find the Text Effectors dropdown in the properties panel and and click the plus icon.
+3D
+Drag a scene clip to the timeline from the types panel
+Double click the scene clip to edit
+Click the plus button in the objects list and add a Text object.
+Select the text
+Find the Text Effectors dropdown in the properties panel and and click the plus icon.
+Ordering effectors
+When adding text effectors, it's important to note that the order matters. The output of one effector is the input into the next one from top to bottom, just like video effects.
+
+Default effector templates
+Standard Layout
+Included by default in every text object. Initializes the characters to their default positions based on a typical text layout.
+
+Property	Description
+Size	Size of the text
+Align	Horizontal alignment or anchor point (left, right, center)
+Vertical Align	Vertical alignment or anchor point (top, baseline, center, bottom)
+Letter Spacing	The spacing between each letter represented as an offset from the original font
+Line spacing	The spacing between each line represented as an offset from the original font
+Tip
+If you disable or delete this effector (and any other layout effectors), you will notice that all of the text characters are stacked on top of each other. This is the default position when there is no layout effector applied. To restore the default text layout, simply add a Standard Layout effector.
+
+Time Offset
+Applies an animation but offsets the timing of each letter, word, or line.
+
+Time Offset text effector example
+
+Property	Description
+Mode	Determines how to group the timing (i.e. by character, non-whitespace character, word, or line)
+Time Offset	The number of seconds each subsequent item is delayed by
+Position	Position animation
+Rotation	Rotation animation
+Scale	Scale animation
+Rotation Order	The order the axises in the rotation property
+Reverse	Toggles between first item to last item or last item to first item
+Segment
+Selectively affects different parts (or segments) of the text.
+
+Segment text effector example
+
+Property	Description
+Target Type	Determines which type of segment to target (i.e. by character, non-whitespace character, word, or line)
+Target Mode	Whether the target property refers to a percent or an index
+Target	The index or percent of what this effector will change
+Target Size	The size or buffer around the target
+Position	Position animation
+Rotation	Rotation animation
+Scale	Scale animation
+Apply Mode	Option to apply relative change or to interpolate between an absolute position
+Shake
+Adds a shaking animation to each character.
+
+Shake text effector example
+
+Property	Description
+Amount	The amplitude (intensity) of the shake
+Frequency	The frequency (speed) of the shake
+Frequency Variance	The amount of variance between shake targets
+Smooth Amount	Amount of smooth period wave to use
+Noise Amount	Amount of random noise to use
+Translate Amount	Factor applied to shake translation (position)
+Rotate Amount	Factor applied to shake rotation
+Scatter
+Randomly scatters all characters. Can also be used to randomly rotate characters.
+
+Scatter text effector example
+
+Property	Description
+Amount	Overall amount to randomly scatter
+Translate Amount	Maximum amount to translate in any direction
+Rotate Amount	Maximum amount to rotate on any axis
+Position Weights	Weight factors applied to each dimension when positioning
+Rotation Weights	Weight factors applied to each dimension when rotating
+Seed	A seed for the pseudorandom sequence; different seeds produce different randomizations
+Arc Layout
+Positions letters along an arc.
+
+Arc Layout text effector example
+
+Property	Description
+Arc Size	The size (radius) of the arc
+Center Angle	The center point to align letters around the arc
+Radius	The radius of the arc
+Face Outward	Causes letters to face outward from the center of the arc
+Note
+Typically, only one layout effector should be used on a single text at once. This is due to the way text layout calculation currently works. You may experience strange results if using multiple layout effectors on the same text object (e.g. Standard Layout + Arc Layout).

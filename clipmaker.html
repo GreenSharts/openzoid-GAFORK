@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="./pz.all-35.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Code+Pro">
+
+    <script src="./three.r91.min.js"></script>
+
+    <script>
+        var PZ = {};
+
+        PZ.stringHash = function (str) {
+            var hash = 0;
+            var chr;
+            if (str.length === 0) return hash;
+            for (var i = 0; i < str.length; i++) {
+                chr = str.charCodeAt(i);
+                hash = (hash << 5) - hash + chr;
+                hash |= 0; // Convert to 32bit integer
+            }
+            return hash;
+        };
+
+        // PZ.apiOrigin = "https://api.panzoid.com";
+        // PZ.blobOrigin = "https://blob.panzoid.com";
+        PZ.apiOrigin = "";
+        PZ.blobOrigin = "";
+
+        PZ.account = {
+            //currentUser: undefined,
+            //csrf: undefined,
+            updatePromise: null,
+        };
+
+        PZ.account.getCurrent = async function () { return null; };
+
+        PZ.api = async function (url, op, body) {};
+
+        PZ.ui = PZ.ui || {};
+        PZ.ui.ads = {};
+
+        PZ.ui.ads.init = async function () {};
+
+        PZ.ui.ads.show = async function (unit, elementID) {};
+    </script>
+</head>
+
+<body>
+    <style>
+        /* scrollbars */
+        
+        ::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+        
+        ::-webkit-scrollbar-button {
+            display: none;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background-color: #222;
+        }
+        
+        ::-webkit-scrollbar-track-piece {
+            background-color: #222;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background-color: #555;
+            /*border: 2px solid #222;*/
+        }
+
+        ::-webkit-scrollbar-corner {
+            background-color: transparent;
+        }
+    </style>
+
+    <div id="panecontainer">
+        <div id="editorpane">
+            <div id="controls"></div>
+            <div id="elevator">
+                <div id="elevatortabs"></div>
+            </div>
+        </div>
+
+        <div id="previewpane">
+            <canvas id="c_main"></canvas>
+            <div id="previewtop">
+                <div style="text-align: center;" id="Panzoid_tool_970x90_728x90_468x60_320x50_300x75"></div>
+            </div>
+            <div id="previewbottom"></div>
+        </div>
+    </div>
+
+    <script src="./core-1.0.102.js"></script>
+    <script src="./ui-1.0.72.js"></script>
+    <script src="./clipmaker-3.0.106.js"></script>
+
+    <script>
+      initTool();
+    </script>
+</body>
+
+</html>
