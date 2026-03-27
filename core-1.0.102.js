@@ -21029,6 +21029,7 @@ PZ.compositor.prototype = {
         { name: "Image", type: "texture" },
         { name: "Video", type: "video" },
         { name: "Custom Material", type: "custom" },
+        { name: "Water", type: "water" },
     ]),
     PZ.ui.objectTypes.set(PZ.layer, [
         { name: "LAYERS", category: true },
