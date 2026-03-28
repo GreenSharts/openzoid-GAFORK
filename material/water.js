@@ -408,11 +408,6 @@ this.initWater = function() {
             transformed = transformed + normal * displacement.y + t * displacement.x + b * displacement.z;
             v_position = (modelMatrix * vec4(transformed, 1.0)).xyz;
             v_normal = normalize(normalMatrix * normal);
-
-            // Protect against NaN
-            if (isnan(v_position.x)) v_position = vec3(0.0);
-            if (isnan(transformed.x)) transformed = vec3(0.0);
-            if (isnan(v_normal.x)) v_normal = vec3(0.0, 1.0, 0.0);
             `
         );
 
@@ -438,9 +433,9 @@ this.initWater = function() {
         );
 
         shader.fragmentShader = shader.fragmentShader.replace(
-            '#include <color_fragment>',
+            '#include <dithering_fragment>',
             `
-            #include <color_fragment>
+            #include <dithering_fragment>
 
             vec3 mapNormal = texture2D(u_normalMap, v_coordinates).rgb;
 
@@ -462,13 +457,7 @@ this.initWater = function() {
 
             vec3 color = sky + water;
 
-            // Output normal color for a split second to test if normals exist (if needed, otherwise we output proper hdr)
-            diffuseColor = vec4(hdr(color, u_exposure), opacity);
-
-            // To ensure it never renders fully black because of extreme fresnel or extreme exposure clamping:
-            if (length(diffuseColor.rgb) < 0.01) {
-                diffuseColor.rgb = u_oceanColor + vec3(0.01);
-            }
+            gl_FragColor = vec4(hdr(color, u_exposure), 1.0); // Hardcode opacity to 1.0 for testing
             `
         );
     };
@@ -511,7 +500,10 @@ this.update = function (e) {
         this.renderPass(renderer, this.initialSpectrumMaterial, this.initialSpectrumRenderTarget);
     }
 
-    this.phaseMaterial.uniforms.u_phases.value = this.pingPhase ? this.pongPhaseRenderTarget.texture : this.pingPhaseRenderTarget.texture;
+    // In the first frame, use the random phase texture instead of empty render targets
+    let phaseTextureIn = this.firstFrameComplete ? (this.pingPhase ? this.pongPhaseRenderTarget.texture : this.pingPhaseRenderTarget.texture) : this.phaseMaterial.uniforms.u_phases.value;
+
+    this.phaseMaterial.uniforms.u_phases.value = phaseTextureIn;
     this.phaseMaterial.uniforms.u_deltaTime.value = deltaTime * this.properties.speed.get(e);
     this.phaseMaterial.uniforms.u_size.value = size;
     this.renderPass(renderer, this.phaseMaterial, this.pingPhase ? this.pingPhaseRenderTarget : this.pongPhaseRenderTarget);
@@ -526,6 +518,11 @@ this.update = function (e) {
     var subtransformMaterial = this.horizontalSubtransformMaterial;
     var iterations = log2(RESOLUTION) * 2;
     for (var i = 0; i < iterations; i += 1) {
+        if (i === iterations / 2) {
+            subtransformMaterial = this.verticalSubtransformMaterial;
+        }
+        subtransformMaterial.uniforms.u_subtransformSize.value = Math.pow(2,(i % (iterations / 2)) + 1);
+
         if (i === 0) {
             subtransformMaterial.uniforms.u_input.value = this.spectrumRenderTarget.texture;
             this.renderPass(renderer, subtransformMaterial, this.pingTransformRenderTarget);
@@ -539,11 +536,6 @@ this.update = function (e) {
             subtransformMaterial.uniforms.u_input.value = this.pongTransformRenderTarget.texture;
             this.renderPass(renderer, subtransformMaterial, this.pingTransformRenderTarget);
         }
-
-        if (i === iterations / 2) {
-            subtransformMaterial = this.verticalSubtransformMaterial;
-        }
-        subtransformMaterial.uniforms.u_subtransformSize.value = Math.pow(2,(i % (iterations / 2)) + 1);
     }
 
     if (changed) {
@@ -552,6 +544,7 @@ this.update = function (e) {
     this.renderPass(renderer, this.normalMapMaterial, this.normalMapRenderTarget);
 
     renderer.setRenderTarget(oldRenderTarget);
+    this.firstFrameComplete = true;
 
     if (this.threeObj.userData.shader) {
         this.threeObj.userData.shader.uniforms.u_size.value = size;
