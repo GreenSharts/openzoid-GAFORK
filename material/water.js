@@ -35,8 +35,20 @@ const log2 = function (number) {
 };
 
 this.initWater = function() {
+    // Check if Float textures are supported by the renderer
+    let renderer = typeof window !== "undefined" && window.editor && window.editor.playback && window.editor.playback.renderer ? window.editor.playback.renderer : null;
     let type = THREE.FloatType;
     let format = THREE.RGBAFormat;
+
+    if (renderer) {
+        let gl = renderer.getContext();
+        if (!gl.getExtension('OES_texture_float')) {
+            type = THREE.HalfFloatType;
+            if (!gl.getExtension('OES_texture_half_float')) {
+                type = THREE.UnsignedByteType; // Fallback, simulation will likely fail or look blocky but won't crash
+            }
+        }
+    }
 
     let createRenderTarget = function() {
         return new THREE.WebGLRenderTarget(RESOLUTION, RESOLUTION, {
@@ -81,7 +93,8 @@ this.initWater = function() {
             phaseArray[i * RESOLUTION * 4 + j * 4 + 3] = 0;
         }
     }
-    let phaseTexture = new THREE.DataTexture(phaseArray, RESOLUTION, RESOLUTION, THREE.RGBAFormat, THREE.FloatType);
+    let phaseTextureType = type === THREE.UnsignedByteType ? THREE.FloatType : type; // If we lack float render targets, we might still have float datatextures
+    let phaseTexture = new THREE.DataTexture(phaseArray, RESOLUTION, RESOLUTION, THREE.RGBAFormat, phaseTextureType);
     phaseTexture.needsUpdate = true;
 
     // Shaders
@@ -351,7 +364,9 @@ this.initWater = function() {
 
     // Apply the custom vertex/fragment shader to this material
     this.threeObj.onBeforeCompile = (shader, renderer) => {
-        this.renderer = renderer;
+        // THREE r91: onBeforeCompile(shader, renderer)
+        // Ensure we capture renderer correctly, if missing use fallback
+        this.renderer = renderer || (typeof window !== "undefined" && window.editor && window.editor.playback ? window.editor.playback.renderer : null);
         shader.uniforms.u_displacementMap = { value: this.displacementMapRenderTarget.texture };
         shader.uniforms.u_normalMap = { value: this.normalMapRenderTarget.texture };
         shader.uniforms.u_geometrySize = { value: 2000.0 };
@@ -393,6 +408,11 @@ this.initWater = function() {
             transformed = transformed + normal * displacement.y + t * displacement.x + b * displacement.z;
             v_position = (modelMatrix * vec4(transformed, 1.0)).xyz;
             v_normal = normalize(normalMatrix * normal);
+
+            // Protect against NaN
+            if (isnan(v_position.x)) v_position = vec3(0.0);
+            if (isnan(transformed.x)) transformed = vec3(0.0);
+            if (isnan(v_normal.x)) v_normal = vec3(0.0, 1.0, 0.0);
             `
         );
 
@@ -431,14 +451,24 @@ this.initWater = function() {
             vec3 worldNormal = normalize(tbn * mapNormal);
 
             vec3 view = normalize(cameraPosition - v_position);
-            float fresnel = 0.02 + 0.98 * pow(1.0 - dot(worldNormal, view), 5.0);
+
+            // Prevent NaN from negative base in pow
+            float dotNV = dot(worldNormal, view);
+            float fresnel = 0.02 + 0.98 * pow(max(0.0, 1.0 - dotNV), 5.0);
             vec3 sky = fresnel * u_skyColor;
 
             float diffuse_water = clamp(dot(worldNormal, normalize(u_sunDirection)), 0.0, 1.0);
             vec3 water = (1.0 - fresnel) * u_oceanColor * u_skyColor * diffuse_water;
 
             vec3 color = sky + water;
+
+            // Output normal color for a split second to test if normals exist (if needed, otherwise we output proper hdr)
             diffuseColor = vec4(hdr(color, u_exposure), opacity);
+
+            // To ensure it never renders fully black because of extreme fresnel or extreme exposure clamping:
+            if (length(diffuseColor.rgb) < 0.01) {
+                diffuseColor.rgb = u_oceanColor + vec3(0.01);
+            }
             `
         );
     };
@@ -451,7 +481,7 @@ this.renderPass = function(renderer, material, renderTarget) {
 
 this.update = function (e) {
     var t = this;
-    let renderer = this.parentLayer ? this.parentLayer.pass.renderer : null;
+    let renderer = this.renderer || (this.parentLayer && this.parentLayer.pass ? this.parentLayer.pass.renderer : null);
 
     // Attempt fallback to find renderer if not found directly
     if (!renderer && typeof window !== "undefined" && window.editor && window.editor.playback && window.editor.playback.renderer) {
