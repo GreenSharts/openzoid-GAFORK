@@ -35,20 +35,11 @@ const log2 = function (number) {
 };
 
 this.initWater = function() {
-    // Check if Float textures are supported by the renderer
-    let renderer = typeof window !== "undefined" && window.editor && window.editor.playback && window.editor.playback.renderer ? window.editor.playback.renderer : null;
+    // We cannot definitively check Float extensions before we get a renderer.
+    // Three.js manages these internally, so we assume FloatType is supported,
+    // and if the device lacks OES_texture_float, three.js handles warning.
     let type = THREE.FloatType;
     let format = THREE.RGBAFormat;
-
-    if (renderer) {
-        let gl = renderer.getContext();
-        if (!gl.getExtension('OES_texture_float')) {
-            type = THREE.HalfFloatType;
-            if (!gl.getExtension('OES_texture_half_float')) {
-                type = THREE.UnsignedByteType; // Fallback, simulation will likely fail or look blocky but won't crash
-            }
-        }
-    }
 
     let createRenderTarget = function() {
         return new THREE.WebGLRenderTarget(RESOLUTION, RESOLUTION, {
@@ -367,6 +358,10 @@ this.initWater = function() {
         // THREE r91: onBeforeCompile(shader, renderer)
         // Ensure we capture renderer correctly, if missing use fallback
         this.renderer = renderer || (typeof window !== "undefined" && window.editor && window.editor.playback ? window.editor.playback.renderer : null);
+        if (this._needsFFTUpdate) {
+            this._runFFTSimulation(this.renderer, this._lastTime);
+            this._needsFFTUpdate = false;
+        }
         shader.uniforms.u_displacementMap = { value: this.displacementMapRenderTarget.texture };
         shader.uniforms.u_normalMap = { value: this.normalMapRenderTarget.texture };
         shader.uniforms.u_geometrySize = { value: 2000.0 };
@@ -477,8 +472,25 @@ this.update = function (e) {
         renderer = window.editor.playback.renderer;
     }
 
-    if (!renderer) return;
+    // We defer FFT simulation steps until the first valid render pass (which we can catch via onBeforeCompile
+    // or by overriding `onBeforeRender` for the shape object if needed).
+    // In three.js, `onBeforeRender` supplies the `renderer`, but our water effect is a material.
+    // Instead of forcing `this.update` to do WebGL commands without a renderer,
+    // we'll flag it for update and do it during rendering when the material gives us a valid WebGL context.
+    if (!renderer && this.renderer) {
+        renderer = this.renderer; // This is the WebGLRenderer given to us inside onBeforeCompile
+    }
 
+    if (!renderer) {
+        this._needsFFTUpdate = true;
+        this._lastTime = e;
+        return;
+    }
+
+    this._runFFTSimulation(renderer, e);
+};
+
+this._runFFTSimulation = function(renderer, e) {
     let time = this.properties.time.get(e);
     let deltaTime = (time - this.lastTime);
     this.lastTime = time;

@@ -19715,7 +19715,11 @@ PZ.compositor.prototype = {
                 });
             let e,
                 t = this.properties.geometryProperties;
-            let segments = this.properties.material.value === "water" ? 128 : 1;
+            let isWater = false;
+            if (this.material && this.material.type === "water") {
+                isWater = true;
+            }
+            let segments = isWater ? 128 : 1;
             switch (this.objectType) {
                 case 1:
                     e = new THREE.BoxGeometry(t.box_size.get()[0], t.box_size.get()[1], t.box_size.get()[2], segments, segments, segments);
