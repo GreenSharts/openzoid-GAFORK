@@ -19715,31 +19715,36 @@ PZ.compositor.prototype = {
                 });
             let e,
                 t = this.properties.geometryProperties;
+            let isWater = false;
+            if (this.material && this.material.type === "water") {
+                isWater = true;
+            }
+            let segments = isWater ? 128 : 1;
             switch (this.objectType) {
                 case 1:
-                    e = new THREE.BoxGeometry(t.box_size.get()[0], t.box_size.get()[1], t.box_size.get()[2]);
+                    e = new THREE.BoxGeometry(t.box_size.get()[0], t.box_size.get()[1], t.box_size.get()[2], segments, segments, segments);
                     break;
                 case 2:
                     e = new THREE.CylinderGeometry(
                         t.cylinder_size.get()[0],
                         t.cylinder_size.get()[1],
                         t.cylinder_size.get()[2],
-                        t.cylinder_detail.get(),
-                        1,
+                        t.cylinder_detail.get() > segments ? t.cylinder_detail.get() : segments,
+                        segments,
                         !t.cylinder_openEnded.get()
                     );
                     break;
                 case 3:
-                    e = new THREE.PlaneGeometry(t.rect_size.get()[0], t.rect_size.get()[1]);
+                    e = new THREE.PlaneGeometry(t.rect_size.get()[0], t.rect_size.get()[1], segments, segments);
                     break;
                 case 4:
-                    e = new THREE.CircleGeometry(t.circle_size.get(), t.circle_detail.get(), 0, 2 * Math.PI);
+                    e = new THREE.CircleGeometry(t.circle_size.get(), t.circle_detail.get() > segments ? t.circle_detail.get() : segments, 0, 2 * Math.PI);
                     break;
                 case 5:
                     e = new THREE.SphereGeometry(
                         t.sphere_size.get(),
-                        t.sphere_detail.get()[0],
-                        t.sphere_detail.get()[1],
+                        t.sphere_detail.get()[0] > segments ? t.sphere_detail.get()[0] : segments,
+                        t.sphere_detail.get()[1] > segments ? t.sphere_detail.get()[1] : segments,
                         0,
                         2 * Math.PI,
                         0,
@@ -21029,6 +21034,7 @@ PZ.compositor.prototype = {
         { name: "Image", type: "texture" },
         { name: "Video", type: "video" },
         { name: "Custom Material", type: "custom" },
+        { name: "Water", type: "water" },
     ]),
     PZ.ui.objectTypes.set(PZ.layer, [
         { name: "LAYERS", category: true },
