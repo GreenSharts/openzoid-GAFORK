@@ -38,41 +38,62 @@ this.initWater = function() {
     // We cannot definitively check Float extensions before we get a renderer.
     // Three.js manages these internally, so we assume FloatType is supported,
     // and if the device lacks OES_texture_float, three.js handles warning.
+
     let type = THREE.FloatType;
     let format = THREE.RGBAFormat;
 
-    let createRenderTarget = function() {
-        return new THREE.WebGLRenderTarget(RESOLUTION, RESOLUTION, {
-            wrapS: THREE.ClampToEdgeWrapping,
-            wrapT: THREE.ClampToEdgeWrapping,
-            minFilter: THREE.NearestFilter,
-            magFilter: THREE.NearestFilter,
-            format: format,
-            type: type,
-            stencilBuffer: false,
-            depthBuffer: false
-        });
+    this._createRenderTargets = function() {
+        if (this.initialSpectrumRenderTarget) this.initialSpectrumRenderTarget.dispose();
+        if (this.pingPhaseRenderTarget) this.pingPhaseRenderTarget.dispose();
+        if (this.pongPhaseRenderTarget) this.pongPhaseRenderTarget.dispose();
+        if (this.spectrumRenderTarget) this.spectrumRenderTarget.dispose();
+        if (this.displacementMapRenderTarget) this.displacementMapRenderTarget.dispose();
+        if (this.normalMapRenderTarget) this.normalMapRenderTarget.dispose();
+        if (this.pingTransformRenderTarget) this.pingTransformRenderTarget.dispose();
+        if (this.pongTransformRenderTarget) this.pongTransformRenderTarget.dispose();
+
+        let createRenderTarget = function() {
+            return new THREE.WebGLRenderTarget(RESOLUTION, RESOLUTION, {
+                wrapS: THREE.ClampToEdgeWrapping,
+                wrapT: THREE.ClampToEdgeWrapping,
+                minFilter: THREE.NearestFilter,
+                magFilter: THREE.NearestFilter,
+                format: format,
+                type: type,
+                stencilBuffer: false,
+                depthBuffer: false
+            });
+        };
+
+        this.initialSpectrumRenderTarget = createRenderTarget();
+        this.initialSpectrumRenderTarget.texture.wrapS = THREE.RepeatWrapping;
+        this.initialSpectrumRenderTarget.texture.wrapT = THREE.RepeatWrapping;
+
+        this.pingPhaseRenderTarget = createRenderTarget();
+        this.pongPhaseRenderTarget = createRenderTarget();
+
+        this.spectrumRenderTarget = createRenderTarget();
+
+        this.pingTransformRenderTarget = createRenderTarget();
+        this.pongTransformRenderTarget = createRenderTarget();
+
+        this.displacementMapRenderTarget = createRenderTarget();
+        this.displacementMapRenderTarget.texture.minFilter = THREE.LinearFilter;
+        this.displacementMapRenderTarget.texture.magFilter = THREE.LinearFilter;
+
+        this.normalMapRenderTarget = createRenderTarget();
+        this.normalMapRenderTarget.texture.minFilter = THREE.LinearFilter;
+        this.normalMapRenderTarget.texture.magFilter = THREE.LinearFilter;
+
+        if (this.spectrumMaterial) {
+            this.spectrumMaterial.uniforms.u_initialSpectrum.value = this.initialSpectrumRenderTarget.texture;
+            this.normalMapMaterial.uniforms.u_displacementMap.value = this.displacementMapRenderTarget.texture;
+        }
+
+        this._lastSize = null; // force initial render
+        this.firstFrameComplete = false;
     };
-
-    this.initialSpectrumRenderTarget = createRenderTarget();
-    this.initialSpectrumRenderTarget.texture.wrapS = THREE.RepeatWrapping;
-    this.initialSpectrumRenderTarget.texture.wrapT = THREE.RepeatWrapping;
-
-    this.pingPhaseRenderTarget = createRenderTarget();
-    this.pongPhaseRenderTarget = createRenderTarget();
-
-    this.spectrumRenderTarget = createRenderTarget();
-
-    this.pingTransformRenderTarget = createRenderTarget();
-    this.pongTransformRenderTarget = createRenderTarget();
-
-    this.displacementMapRenderTarget = createRenderTarget();
-    this.displacementMapRenderTarget.texture.minFilter = THREE.LinearFilter;
-    this.displacementMapRenderTarget.texture.magFilter = THREE.LinearFilter;
-
-    this.normalMapRenderTarget = createRenderTarget();
-    this.normalMapRenderTarget.texture.minFilter = THREE.LinearFilter;
-    this.normalMapRenderTarget.texture.magFilter = THREE.LinearFilter;
+    this._createRenderTargets();
 
     // Initialize phase texture with random values
     let phaseArray = new Float32Array(RESOLUTION * RESOLUTION * 4);
@@ -358,10 +379,19 @@ this.initWater = function() {
         // THREE r91: onBeforeCompile(shader, renderer)
         // Ensure we capture renderer correctly, if missing use fallback
         this.renderer = renderer || (typeof window !== "undefined" && window.editor && window.editor.playback ? window.editor.playback.renderer : null);
+        if (this._lastRenderer !== this.renderer) {
+            if (this._createRenderTargets) {
+                this._createRenderTargets();
+                this._lastRenderer = this.renderer;
+            }
+        }
+
         if (this._needsFFTUpdate) {
             this._runFFTSimulation(this.renderer, this._lastTime);
             this._needsFFTUpdate = false;
         }
+        // Keep a reference to shader to update textures if recreated
+        this._shader = shader;
         shader.uniforms.u_displacementMap = { value: this.displacementMapRenderTarget.texture };
         shader.uniforms.u_normalMap = { value: this.normalMapRenderTarget.texture };
         shader.uniforms.u_geometrySize = { value: 2000.0 };
@@ -481,10 +511,21 @@ this.update = function (e) {
         renderer = this.renderer; // This is the WebGLRenderer given to us inside onBeforeCompile
     }
 
-    if (!renderer) {
+if (!renderer) {
         this._needsFFTUpdate = true;
         this._lastTime = e;
         return;
+    }
+
+    if (this._lastRenderer !== renderer) {
+        if (this._createRenderTargets) {
+            this._createRenderTargets();
+            if (this._shader) {
+                this._shader.uniforms.u_displacementMap.value = this.displacementMapRenderTarget.texture;
+                this._shader.uniforms.u_normalMap.value = this.normalMapRenderTarget.texture;
+            }
+        }
+        this._lastRenderer = renderer;
     }
 
     this._runFFTSimulation(renderer, e);
