@@ -8,6 +8,7 @@ this.load = function (e) {
 
 this.unload = function () {
     this.threeObj.dispose();
+    if (this.initialPhaseTexture) this.initialPhaseTexture.dispose();
     if (this.initialSpectrumRenderTarget) this.initialSpectrumRenderTarget.dispose();
     if (this.pingPhaseRenderTarget) this.pingPhaseRenderTarget.dispose();
     if (this.pongPhaseRenderTarget) this.pongPhaseRenderTarget.dispose();
@@ -108,6 +109,7 @@ this.initWater = function() {
     let phaseTextureType = type === THREE.UnsignedByteType ? THREE.FloatType : type; // If we lack float render targets, we might still have float datatextures
     let phaseTexture = new THREE.DataTexture(phaseArray, RESOLUTION, RESOLUTION, THREE.RGBAFormat, phaseTextureType);
     phaseTexture.needsUpdate = true;
+    this.initialPhaseTexture = phaseTexture;
 
     // Shaders
     const FULLSCREEN_VERTEX_SOURCE = [
@@ -554,7 +556,11 @@ this._runFFTSimulation = function(renderer, e) {
     }
 
     // In the first frame, use the random phase texture instead of empty render targets
-    let phaseTextureIn = this.firstFrameComplete ? (this.pingPhase ? this.pongPhaseRenderTarget.texture : this.pingPhaseRenderTarget.texture) : this.phaseMaterial.uniforms.u_phases.value;
+    let phaseTextureIn = this.firstFrameComplete ? (this.pingPhase ? this.pongPhaseRenderTarget.texture : this.pingPhaseRenderTarget.texture) : this.initialPhaseTexture;
+
+    if (!this.firstFrameComplete && this.initialPhaseTexture) {
+        this.initialPhaseTexture.needsUpdate = true;
+    }
 
     this.phaseMaterial.uniforms.u_phases.value = phaseTextureIn;
     this.phaseMaterial.uniforms.u_deltaTime.value = deltaTime * this.properties.speed.get(e);
