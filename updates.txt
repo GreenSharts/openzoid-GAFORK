@@ -1,0 +1,777 @@
+==== core-1.0.102.js:16135 ====
+                }
+            } else if (this.el) {
+                let e = this.currentItem.clip.properties.time.get(i);
+                await this.decodeFrame(e);
+            }
+            this.currentItem.clip && (this.currentItem.clip.update(e), await this.currentItem.clip.prepare(e, t));
+        }
+    }),
+    (PZ.schedule.combineTracks = function (e) {
+        for (var t = [], r = 0; r < e.length; r++) 0 !== e[r].clips.length && t.push({ track: e[r], idx: 0 });
+        var i,
+            a = [];
+        function s() {
+            for (var e = 0, r = null, i = 0; i < t.length; i++) {
+                var a = t[i],
+                    s = a.track.clips[a.idx];
+                (!r || s.start < r.start) && ((r = s), (e = i));
+            }
+            return null !== r && ++t[e].idx >= t[e].track.clips.length && t.splice(e, 1), r;
+        }
+==== core-1.0.102.js:17363 ====
+    (PZ.assetList.prototype.removeIfUnused = function (e) {
+        e.references <= 0 &&
+            e.mediaReferences <= 0 &&
+            (e.source === PZ.asset.source.FILE && e.url && URL.revokeObjectURL(e.url),
+            delete this.list[e.key],
+            this.onAssetRemoved.update(e));
+    }),
+    (PZ.assetList.prototype.restore = function (e) {
+        (this.list[e.key] = e), this.onAssetCreated.update(e);
+    }),
+    (PZ.assetList.prototype.loadAll = function (e, t) {
+        for (var r = Object.keys(e), i = 0; i < r.length; i++) {
+            var a = e[r[i]];
+            (this.list[r[i]] = new PZ.asset()), this.list[r[i]].load(a, t), this.onAssetCreated.update(this.list[r[i]]);
+        }
+    }),
+    (PZ.assetList.prototype.saveAll = function (e) {
+        for (var t = Object.keys(this.list), r = 0; r < t.length; r++) this.list[t[r]].save(e);
+    }),
+    (PZ.sequence = class extends PZ.object {
+==== core-1.0.102.js:17366 ====
+            (e.source === PZ.asset.source.FILE && e.url && URL.revokeObjectURL(e.url),
+            delete this.list[e.key],
+            this.onAssetRemoved.update(e));
+    }),
+    (PZ.assetList.prototype.restore = function (e) {
+        (this.list[e.key] = e), this.onAssetCreated.update(e);
+    }),
+    (PZ.assetList.prototype.loadAll = function (e, t) {
+        for (var r = Object.keys(e), i = 0; i < r.length; i++) {
+            var a = e[r[i]];
+            (this.list[r[i]] = new PZ.asset()), this.list[r[i]].load(a, t), this.onAssetCreated.update(this.list[r[i]]);
+        }
+    }),
+    (PZ.assetList.prototype.saveAll = function (e) {
+        for (var t = Object.keys(this.list), r = 0; r < t.length; r++) this.list[t[r]].save(e);
+    }),
+    (PZ.sequence = class extends PZ.object {
+        constructor() {
+            super(),
+                PZ.observable.defineObservableProp(this, "length", "onLengthChanged"),
+==== core-1.0.102.js:17423 ====
+                videoTracks: this.videoTracks,
+                audioTracks: this.audioTracks,
+                clipLinks: this.clipLinks,
+            };
+        }
+        update(e) {
+            for (let t = 0; t < this.videoTracks.length; t++) this.videoTracks[t].update(e);
+        }
+        async prepare(e, t) {
+            this.update(e);
+            for (let r = 0; r < this.videoSchedules.length; r++) await this.videoSchedules[r].prepare(e, t);
+        }
+    }),
+    (PZ.sequence.defaultName = "Sequence"),
+    (PZ.sequence.propertyDefinitions = {
+        name: { visible: false, name: "Name", type: PZ.property.type.TEXT, value: "Sequence" },
+        resolution: {
+            name: "Resolution",
+            type: PZ.property.type.VECTOR2,
+            spaceChar: "x",
+==== core-1.0.102.js:17424 ====
+                audioTracks: this.audioTracks,
+                clipLinks: this.clipLinks,
+            };
+        }
+        update(e) {
+            for (let t = 0; t < this.videoTracks.length; t++) this.videoTracks[t].update(e);
+        }
+        async prepare(e, t) {
+            this.update(e);
+            for (let r = 0; r < this.videoSchedules.length; r++) await this.videoSchedules[r].prepare(e, t);
+        }
+    }),
+    (PZ.sequence.defaultName = "Sequence"),
+    (PZ.sequence.propertyDefinitions = {
+        name: { visible: false, name: "Name", type: PZ.property.type.TEXT, value: "Sequence" },
+        resolution: {
+            name: "Resolution",
+            type: PZ.property.type.VECTOR2,
+            spaceChar: "x",
+            value: [1920, 1080],
+==== core-1.0.102.js:17427 ====
+        }
+        update(e) {
+            for (let t = 0; t < this.videoTracks.length; t++) this.videoTracks[t].update(e);
+        }
+        async prepare(e, t) {
+            this.update(e);
+            for (let r = 0; r < this.videoSchedules.length; r++) await this.videoSchedules[r].prepare(e, t);
+        }
+    }),
+    (PZ.sequence.defaultName = "Sequence"),
+    (PZ.sequence.propertyDefinitions = {
+        name: { visible: false, name: "Name", type: PZ.property.type.TEXT, value: "Sequence" },
+        resolution: {
+            name: "Resolution",
+            type: PZ.property.type.VECTOR2,
+            spaceChar: "x",
+            value: [1920, 1080],
+            decimals: 0,
+            max: 4e3,
+            min: 1,
+==== core-1.0.102.js:17518 ====
+                    let i = PZ.clip.create(r, e.clips[t].object.type);
+                    this.clips.push(i), i.load(e.clips[t]);
+                }
+            }
+        }
+        update(e) {
+            let t = this.enabled ? this.getCurrentClip(e) : null;
+            this.layer = t ? t.object : null;
+        }
+        toJSON() {
+            return { type: this.type, clips: this.clips };
+        }
+    }),
+    (PZ.track.audio = class extends PZ.track {
+        constructor() {
+            super(), (this.clips = new PZ.objectList(this, PZ.clip.audio)), (this.children = [this.clips]);
+        }
+    }),
+    (PZ.track.audio.prototype.type = 1),
+    (PZ.track.video = class extends PZ.track {
+==== core-1.0.102.js:17583 ====
+            };
+        }
+        unload() {
+            this.media && this.parentProject.assets.unload(this.media), this.object && this.object.unload();
+        }
+        update(e) {
+            this.object.update(e - this.start);
+        }
+        async prepare(e, t) {
+            await this.object.prepare(e - this.start);
+        }
+    }),
+    (PZ.clip.propertyDefinitions = {
+        name: { visible: false, name: "Name", type: PZ.property.type.TEXT, value: "Clip" },
+        media: {
+            readOnly: true,
+            name: "Media",
+            type: PZ.property.type.ASSET,
+            assetType: PZ.asset.type.AV,
+            value: null,
+==== core-1.0.102.js:17720 ====
+        }
+        unload() {
+            this.parentProject.assets.unload(this.vertShader), this.parentProject.assets.unload(this.fragShader);
+            for (var e = 0; e < this.effects.length; e++) this.effects[e].unload();
+        }
+        update(e) {
+            let t = this.properties.position.get(e);
+            this.composite.group.position.set(t[0], t[1], 0);
+            let r = this.properties.rotation.get(e);
+            this.composite.group.rotation.z = r;
+            let i = this.properties.scale.get(e);
+            this.composite.group.scale.set(i[0], i[1], 1),
+                (this.composite.quad.material.uniforms.opacity.value = this.properties.opacity.get(e));
+            for (var a = 0; a < this.effects.length; a++) this.effects[a].update(e);
+        }
+        async prepare(e, t) {
+            await this.loadShaders;
+            for (var r = 0; r < this.effects.length; r++)
+                await this.effects[r].loading, await this.effects[r].prepare(e, t);
+        }
+==== core-1.0.102.js:17728 ====
+            let r = this.properties.rotation.get(e);
+            this.composite.group.rotation.z = r;
+            let i = this.properties.scale.get(e);
+            this.composite.group.scale.set(i[0], i[1], 1),
+                (this.composite.quad.material.uniforms.opacity.value = this.properties.opacity.get(e));
+            for (var a = 0; a < this.effects.length; a++) this.effects[a].update(e);
+        }
+        async prepare(e, t) {
+            await this.loadShaders;
+            for (var r = 0; r < this.effects.length; r++)
+                await this.effects[r].loading, await this.effects[r].prepare(e, t);
+        }
+    }),
+    (PZ.layer.blendModes = [
+        { name: "zero", value: "BLEND_ZERO" },
+        { name: "src", value: "BLEND_SRC" },
+        { name: "dest", value: "BLEND_DST" },
+        { name: "src over", value: "BLEND_SRC_OVER" },
+        { name: "dest over", value: "BLEND_DST_OVER" },
+        { name: "src in", value: "BLEND_SRC_IN" },
+==== core-1.0.102.js:17924 ====
+        }
+        async prepare(e, t) {
+            for (let r = 0; r < this.objects.length; r++) await this.objects[r].prepare(e, t);
+            await super.prepare(e, t);
+        }
+        update(e) {
+            super.update(e);
+            for (let t = 0; t < this.objects.length; t++) this.objects[t].update(e);
+        }
+    }),
+    (PZ.layer.composite.prototype.defaultName = "Composite"),
+    (PZ.layer.scene = class extends PZ.layer {
+        constructor() {
+            super(), (this.objects = new PZ.objectList(this, PZ.object3d)), this.children.splice(1, 0, this.objects);
+        }
+        load(e) {
+            super.load(e),
+                this.properties.load(e && e.properties),
+                (this.threeObj = new THREE.Scene()),
+                (this.envMap = new PZ.envMap(this)),
+==== core-1.0.102.js:17925 ====
+        async prepare(e, t) {
+            for (let r = 0; r < this.objects.length; r++) await this.objects[r].prepare(e, t);
+            await super.prepare(e, t);
+        }
+        update(e) {
+            super.update(e);
+            for (let t = 0; t < this.objects.length; t++) this.objects[t].update(e);
+        }
+    }),
+    (PZ.layer.composite.prototype.defaultName = "Composite"),
+    (PZ.layer.scene = class extends PZ.layer {
+        constructor() {
+            super(), (this.objects = new PZ.objectList(this, PZ.object3d)), this.children.splice(1, 0, this.objects);
+        }
+        load(e) {
+            super.load(e),
+                this.properties.load(e && e.properties),
+                (this.threeObj = new THREE.Scene()),
+                (this.envMap = new PZ.envMap(this)),
+                (this.motionBlur = new PZ.motionBlur(this)),
+==== core-1.0.102.js:17926 ====
+            for (let r = 0; r < this.objects.length; r++) await this.objects[r].prepare(e, t);
+            await super.prepare(e, t);
+        }
+        update(e) {
+            super.update(e);
+            for (let t = 0; t < this.objects.length; t++) this.objects[t].update(e);
+        }
+    }),
+    (PZ.layer.composite.prototype.defaultName = "Composite"),
+    (PZ.layer.scene = class extends PZ.layer {
+        constructor() {
+            super(), (this.objects = new PZ.objectList(this, PZ.object3d)), this.children.splice(1, 0, this.objects);
+        }
+        load(e) {
+            super.load(e),
+                this.properties.load(e && e.properties),
+                (this.threeObj = new THREE.Scene()),
+                (this.envMap = new PZ.envMap(this)),
+                (this.motionBlur = new PZ.motionBlur(this)),
+                (this.videoMaterials = []),
+==== core-1.0.102.js:17961 ====
+        }
+        toJSON() {
+            var e = super.toJSON();
+            return (e.objects = this.objects), e;
+        }
+        update(e) {
+            this.motionBlur.update(e);
+            for (let t = 0; t < this.objects.length; t++) this.objects[t].update(e);
+            this.threeObj.updateMatrixWorld(), super.update(e);
+        }
+        async prepare(e, t) {
+            for (let r = 0; r < this.objects.length; r++) await this.objects[r].prepare(e, t);
+            await super.prepare(e, t);
+        }
+    }),
+    (PZ.layer.scene.prototype.defaultName = "Scene"),
+    (PZ.layer.image = class extends PZ.layer {
+        constructor() {
+            super(), (this.image = null);
+        }
+==== core-1.0.102.js:17962 ====
+        toJSON() {
+            var e = super.toJSON();
+            return (e.objects = this.objects), e;
+        }
+        update(e) {
+            this.motionBlur.update(e);
+            for (let t = 0; t < this.objects.length; t++) this.objects[t].update(e);
+            this.threeObj.updateMatrixWorld(), super.update(e);
+        }
+        async prepare(e, t) {
+            for (let r = 0; r < this.objects.length; r++) await this.objects[r].prepare(e, t);
+            await super.prepare(e, t);
+        }
+    }),
+    (PZ.layer.scene.prototype.defaultName = "Scene"),
+    (PZ.layer.image = class extends PZ.layer {
+        constructor() {
+            super(), (this.image = null);
+        }
+        load(e) {
+==== core-1.0.102.js:17963 ====
+            var e = super.toJSON();
+            return (e.objects = this.objects), e;
+        }
+        update(e) {
+            this.motionBlur.update(e);
+            for (let t = 0; t < this.objects.length; t++) this.objects[t].update(e);
+            this.threeObj.updateMatrixWorld(), super.update(e);
+        }
+        async prepare(e, t) {
+            for (let r = 0; r < this.objects.length; r++) await this.objects[r].prepare(e, t);
+            await super.prepare(e, t);
+        }
+    }),
+    (PZ.layer.scene.prototype.defaultName = "Scene"),
+    (PZ.layer.image = class extends PZ.layer {
+        constructor() {
+            super(), (this.image = null);
+        }
+        load(e) {
+            if (
+==== core-1.0.102.js:17964 ====
+            return (e.objects = this.objects), e;
+        }
+        update(e) {
+            this.motionBlur.update(e);
+            for (let t = 0; t < this.objects.length; t++) this.objects[t].update(e);
+            this.threeObj.updateMatrixWorld(), super.update(e);
+        }
+        async prepare(e, t) {
+            for (let r = 0; r < this.objects.length; r++) await this.objects[r].prepare(e, t);
+            await super.prepare(e, t);
+        }
+    }),
+    (PZ.layer.scene.prototype.defaultName = "Scene"),
+    (PZ.layer.image = class extends PZ.layer {
+        constructor() {
+            super(), (this.image = null);
+        }
+        load(e) {
+            if (
+                (super.load(e),
+==== core-1.0.102.js:18040 ====
+        }
+        async prepare(e, t) {
+            for (var r = 0; r < this.objects.length; r++) await this.objects[r].prepare(e, t);
+            await super.prepare(e, t);
+        }
+        update(e) {
+            (this.frame = e), super.update(e);
+        }
+        draw(e) {
+            e.save(),
+                e.clearRect(0, 0, e.canvas.width, e.canvas.height),
+                e.translate(0.5 * e.canvas.width, 0.5 * e.canvas.height);
+            let t = this.properties.resolution.get();
+            e.scale(e.canvas.width / t[0], e.canvas.height / t[1]);
+            for (let t = 0; t < this.objects.length; t++) this.objects[t].draw(this.frame, e);
+            e.restore();
+        }
+    }),
+    (PZ.layer.shape.prototype.defaultName = "Shape"),
+    (PZ.layer.shape.preset = class extends PZ.layer.shape {
+==== core-1.0.102.js:18041 ====
+        async prepare(e, t) {
+            for (var r = 0; r < this.objects.length; r++) await this.objects[r].prepare(e, t);
+            await super.prepare(e, t);
+        }
+        update(e) {
+            (this.frame = e), super.update(e);
+        }
+        draw(e) {
+            e.save(),
+                e.clearRect(0, 0, e.canvas.width, e.canvas.height),
+                e.translate(0.5 * e.canvas.width, 0.5 * e.canvas.height);
+            let t = this.properties.resolution.get();
+            e.scale(e.canvas.width / t[0], e.canvas.height / t[1]);
+            for (let t = 0; t < this.objects.length; t++) this.objects[t].draw(this.frame, e);
+            e.restore();
+        }
+    }),
+    (PZ.layer.shape.prototype.defaultName = "Shape"),
+    (PZ.layer.shape.preset = class extends PZ.layer.shape {
+        constructor() {
+==== core-1.0.102.js:18081 ====
+            this.composite.quad.scale.set(r[0], r[1], 1),
+                (this.properties.position.visible = false),
+                (this.properties.scale.visible = false),
+                (this.properties.rotation.visible = false);
+        }
+        update(e) {
+            this.shapesNeedUpdate && (this.updateShapes(), (this.shapesNeedUpdate = false)), super.update(e);
+        }
+        toJSON() {
+            let e = super.toJSON();
+            return (e.objects = [PZ.shape.prototype.toJSON.call(this.objects[0])]), e;
+        }
+        updateShapes() {
+            for (; this.objects[0].objects.length; )
+                this.objects[0].objects.splice(this.objects[0].objects.length - 1, 1);
+            let e = PZ.shape.create(1);
+            switch (((e.path = {}), this.shapeProperties.preset.get())) {
+                case 0:
+                    e.path.draw = function (e) {
+                        e.beginPath(), e.ellipse(0, 0, 100, 100, 0, 0, 2 * Math.PI);
+==== core-1.0.102.js:18082 ====
+                (this.properties.position.visible = false),
+                (this.properties.scale.visible = false),
+                (this.properties.rotation.visible = false);
+        }
+        update(e) {
+            this.shapesNeedUpdate && (this.updateShapes(), (this.shapesNeedUpdate = false)), super.update(e);
+        }
+        toJSON() {
+            let e = super.toJSON();
+            return (e.objects = [PZ.shape.prototype.toJSON.call(this.objects[0])]), e;
+        }
+        updateShapes() {
+            for (; this.objects[0].objects.length; )
+                this.objects[0].objects.splice(this.objects[0].objects.length - 1, 1);
+            let e = PZ.shape.create(1);
+            switch (((e.path = {}), this.shapeProperties.preset.get())) {
+                case 0:
+                    e.path.draw = function (e) {
+                        e.beginPath(), e.ellipse(0, 0, 100, 100, 0, 0, 2 * Math.PI);
+                    };
+==== core-1.0.102.js:18158 ====
+            return (e.objects = [PZ.shape.prototype.toJSON.call(this.objects[0])]), e;
+        }
+        unload() {
+            this.font && this.parentProject.assets.unload(this.font), super.unload();
+        }
+        update(e) {
+            this.fontNeedsUpdate && (this.updateFont(), (this.fontNeedsUpdate = false)),
+                this.shapesNeedUpdate && (this.updateShapes(), (this.shapesNeedUpdate = false)),
+                super.update(e);
+        }
+        updateFont() {
+            let e = this.font;
+            e &&
+                e.getFont().then((t) => {
+                    this.font === e && (this.shapesNeedUpdate = true);
+                });
+        }
+        updateShapes() {
+            if (!this.font || !this.font.font2d) return;
+            let e = this.font.font2d,
+==== core-1.0.102.js:18161 ====
+            this.font && this.parentProject.assets.unload(this.font), super.unload();
+        }
+        update(e) {
+            this.fontNeedsUpdate && (this.updateFont(), (this.fontNeedsUpdate = false)),
+                this.shapesNeedUpdate && (this.updateShapes(), (this.shapesNeedUpdate = false)),
+                super.update(e);
+        }
+        updateFont() {
+            let e = this.font;
+            e &&
+                e.getFont().then((t) => {
+                    this.font === e && (this.shapesNeedUpdate = true);
+                });
+        }
+        updateShapes() {
+            if (!this.font || !this.font.font2d) return;
+            let e = this.font.font2d,
+                t = this.textProperties.size.get() / e.unitsPerEm,
+                r = this.textProperties.text.get(),
+                i = e.stringToGlyphs(r),
+==== core-1.0.102.js:18420 ====
+        }
+        unload() {
+            for (var e = 0; e < this.objects.length; e++) this.objects[e].unload();
+        }
+        resize() {}
+        update(e) {
+            this.enabled = !!this.properties.enabled.get(e);
+            for (var t = 0; t < this.objects.length; t++) this.objects[t].update(e);
+        }
+        async prepare(e) {
+            for (var t = 0; t < this.objects.length; t++)
+                await this.objects[t].loading, await this.objects[t].prepare(e);
+        }
+    }),
+    (PZ.effect.group.propertyDefinitions = {
+        name: { visible: false, name: "Name", type: PZ.property.type.TEXT, value: "Group" },
+        enabled: { dynamic: true, name: "Enabled", type: PZ.property.type.OPTION, value: 1, items: "off;on" },
+    }),
+    (PZ.effect.shader = class extends PZ.effect {
+        constructor() {
+==== core-1.0.102.js:18422 ====
+            for (var e = 0; e < this.objects.length; e++) this.objects[e].unload();
+        }
+        resize() {}
+        update(e) {
+            this.enabled = !!this.properties.enabled.get(e);
+            for (var t = 0; t < this.objects.length; t++) this.objects[t].update(e);
+        }
+        async prepare(e) {
+            for (var t = 0; t < this.objects.length; t++)
+                await this.objects[t].loading, await this.objects[t].prepare(e);
+        }
+    }),
+    (PZ.effect.group.propertyDefinitions = {
+        name: { visible: false, name: "Name", type: PZ.property.type.TEXT, value: "Group" },
+        enabled: { dynamic: true, name: "Enabled", type: PZ.property.type.OPTION, value: 1, items: "off;on" },
+    }),
+    (PZ.effect.shader = class extends PZ.effect {
+        constructor() {
+            super(),
+                (this.textures = new Map()),
+==== core-1.0.102.js:18536 ====
+        }
+        resize() {
+            let e = this.parentLayer.properties.resolution.get();
+            this.pass.uniforms.resolution.value.set(e[0], e[1]);
+        }
+        update(e) {
+            if (this.fragmentShaderNeedsUpdate)
+                this.updateFragmentShader(),
+                    (this.fragmentShaderNeedsUpdate = false),
+                    (this.fragmentShaderHasError = false);
+            else if (
+                this.pass.material.program &&
+                this.pass.material.program.diagnostics &&
+                !this.pass.material.program.diagnostics.runnable
+            ) {
+                if (!this.fragmentShaderHasError) {
+                    let e = this.pass.material.program.diagnostics.fragmentShader.log;
+                    const t = Object.keys(this.pass.material.defines).length;
+                    (e = e.replace(/ERROR: 0:(\d+):/, (e, r) => `ERROR: 0:${parseInt(r) - t}:`)),
+                        this.onShaderError.update(e),
+==== core-1.0.102.js:18550 ====
+            ) {
+                if (!this.fragmentShaderHasError) {
+                    let e = this.pass.material.program.diagnostics.fragmentShader.log;
+                    const t = Object.keys(this.pass.material.defines).length;
+                    (e = e.replace(/ERROR: 0:(\d+):/, (e, r) => `ERROR: 0:${parseInt(r) - t}:`)),
+                        this.onShaderError.update(e),
+                        (this.fragmentShaderHasError = true),
+                        (this.pass.enabled = false);
+                }
+                return;
+            }
+            this.pass.enabled = !!this.properties.enabled.get(e);
+            for (var t = 0; t < this.customProperties.length; t++) {
+                if (this.customProperties[t] instanceof PZ.property.dynamic == false) continue;
+                const r = this.fixPropertyName(this.customProperties[t].properties.name.get()),
+                    i = this.customProperties[t].get(e),
+                    a = this.pass.uniforms[r];
+                Array.isArray(i) ? a.value.set(...i) : (a.value = i);
+            }
+        }
+==== core-1.0.102.js:18712 ====
+        }
+        toJSON() {
+            return { type: this.type, objectType: this.objectType, properties: this.properties };
+        }
+        unload() {}
+        update(e) {
+            let t;
+            this.properties.position &&
+                ((t = this.properties.position.get(e)), this.threeObj.position.set(t[0], t[1], t[2])),
+                this.properties.target &&
+                    ((t = this.properties.target.get(e)),
+                    this.threeObj.target.position.set(t[0], t[1], t[2]),
+                    this.threeObj.target.updateMatrixWorld()),
+                (t = this.properties.color.get(e)),
+                this.threeObj.color.setRGB(t[0], t[1], t[2]),
+                this.properties.groundColor &&
+                    ((t = this.properties.groundColor.get(e)), this.threeObj.groundColor.setRGB(t[0], t[1], t[2])),
+                (this.threeObj.intensity = this.properties.intensity.get(e)),
+                this.properties.angle && (this.threeObj.angle = (this.properties.angle.get(e) * Math.PI) / 180);
+        }
+==== core-1.0.102.js:18879 ====
+            return { type: this.type, objectType: this.objectType, properties: this.properties };
+        }
+        unload() {
+            for (var e = 0; e < this.textures.length; e++) this.parentProject.assets.unload(this.textures[e]);
+        }
+        update(e) {
+            let t;
+            (t = this.properties.position.get(e)),
+                this.threeObj.position.set(t[0], t[1], t[2]),
+                (t = this.properties.rotation.get(e)),
+                this.threeObj.rotation.set(t[0], t[1], t[2]),
+                (t = this.properties.scale.get(e)),
+                this.threeObj.scale.set(t[0], t[1], t[2]),
+                this.lidobj &&
+                    this.lidobj.rotation.set(0.032 * this.properties.modelProperties.lidrotation.get(e), 0, 0);
+        }
+        changeObjectType(e) {
+            let t = "Model";
+            switch (((this.objectType = e), (this.threeObj = new THREE.Object3D()), this.objectType)) {
+                case 1:
+==== core-1.0.102.js:19385 ====
+            this.colorTex.dispose(),
+                this.sizeTex.dispose(),
+                this.texture &&
+                    (this.parentProject.assets.unload(this.texture), this.material.uniforms.image.value.dispose());
+        }
+        update(e) {
+            this.material.uniforms.time.value = this.properties.time.get(e);
+        }
+        async prepare(e) {
+            this.texture && (await this.texture.loading);
+        }
+    }),
+    (PZ.object3d.particles.propertyDefinitions = {
+        name: { visible: false, name: "Name", type: PZ.property.type.TEXT, value: "Particles" },
+        time: { dynamic: true, name: "Time", type: PZ.property.type.NUMBER, value: 0, step: 0.01, decimals: 2 },
+        color: {
+            name: "Color",
+            type: PZ.property.type.GRADIENT,
+            value: [{ position: 0, color: "rgba(255,255,255,1.0)" }],
+            changed: function () {
+==== core-1.0.102.js:19691 ====
+        unload() {
+            this.customGeometry &&
+                (this.parentProject.assets.unload(this.customGeometry), this.threeObj.geometry.dispose()),
+                this.material && this.material.unload();
+        }
+        update(e) {
+            let t;
+            this.geometryNeedsUpdate && (this.generatePresetGeometry(), (this.geometryNeedsUpdate = false)),
+                (t = this.properties.position.get(e)),
+                this.threeObj.position.set(t[0], t[1], t[2]),
+                (t = this.properties.rotation.get(e)),
+                this.threeObj.rotation.set(t[0], t[1], t[2]),
+                (t = this.properties.scale.get(e)),
+                this.threeObj.scale.set(t[0], t[1], t[2]),
+                this.material && this.material.update(e);
+        }
+        async prepare(e) {
+            this.customGeometry && (await this.customGeometry.loading),
+                this.material && (await this.material.loading, await this.material.prepare(e));
+        }
+==== core-1.0.102.js:19700 ====
+                this.threeObj.position.set(t[0], t[1], t[2]),
+                (t = this.properties.rotation.get(e)),
+                this.threeObj.rotation.set(t[0], t[1], t[2]),
+                (t = this.properties.scale.get(e)),
+                this.threeObj.scale.set(t[0], t[1], t[2]),
+                this.material && this.material.update(e);
+        }
+        async prepare(e) {
+            this.customGeometry && (await this.customGeometry.loading),
+                this.material && (await this.material.loading, await this.material.prepare(e));
+        }
+        updateGeometry(e) {
+            this.threeObj &&
+                (this.threeObj.geometry && (this.threeObj.geometry.dispose(), (this.threeObj.geometry = null)),
+                e && ((this.threeObj.geometry = e), (this.threeObj.geometry.buffersNeedUpdate = true)));
+        }
+        generatePresetGeometry() {
+            if (99 === this.objectType)
+                return void this.customGeometry.getGeometry().then((e) => {
+                    this.updateGeometry(e);
+==== core-1.0.102.js:20178 ====
+            return { type: this.type, properties: this.properties, material: this.material };
+        }
+        unload() {
+            this.font && this.parentProject.assets.unload(this.font), this.material && this.material.unload();
+        }
+        update(e) {
+            let t;
+            this.fontNeedsUpdate && (this.updateFont(), (this.fontNeedsUpdate = false)),
+                this.geometryNeedsUpdate && (this.updateGeometry(), (this.geometryNeedsUpdate = false)),
+                (t = this.properties.position.get(e)),
+                this.threeObj.position.set(t[0], t[1], t[2]),
+                (t = this.properties.rotation.get(e)),
+                this.threeObj.rotation.set(t[0], t[1], t[2]),
+                (t = this.properties.scale.get(e)),
+                this.threeObj.scale.set(t[0], t[1], t[2]),
+                this.material && this.material.update(e);
+        }
+        async prepare(e) {
+            this.font && (await this.font.loading3d),
+                this.material && (await this.material.loading, await this.material.prepare(e));
+==== core-1.0.102.js:20188 ====
+                this.threeObj.position.set(t[0], t[1], t[2]),
+                (t = this.properties.rotation.get(e)),
+                this.threeObj.rotation.set(t[0], t[1], t[2]),
+                (t = this.properties.scale.get(e)),
+                this.threeObj.scale.set(t[0], t[1], t[2]),
+                this.material && this.material.update(e);
+        }
+        async prepare(e) {
+            this.font && (await this.font.loading3d),
+                this.material && (await this.material.loading, await this.material.prepare(e));
+        }
+        center() {
+            this.threeObj.geometry.computeBoundingBox();
+            var e = this.threeObj.geometry.boundingBox,
+                t = new THREE.Vector3();
+            switch ((t.addVectors(e.min, e.max), t.multiplyScalar(-0.5), this.properties.positionMode.get())) {
+                case 1:
+                    t.x -= t.x;
+                    break;
+                case 2:
+==== core-1.0.102.js:20416 ====
+            };
+        }
+        unload() {
+            for (var e = 0; e < this.objects.length; e++) this.objects[e].unload();
+        }
+        update(e) {
+            let t;
+            (this.threeObj.visible = 1 === this.properties.enabled.get(e)),
+                (t = this.properties.position.get(e)),
+                this.threeObj.position.set(t[0], t[1], t[2]),
+                (t = this.properties.rotation.get(e)),
+                this.threeObj.rotation.set(t[0], t[1], t[2]),
+                (t = this.properties.scale.get(e)),
+                this.threeObj.scale.set(t[0], t[1], t[2]);
+            for (var r = 0; r < this.objects.length; r++) this.objects[r].update(e);
+        }
+        async prepare(e) {
+            for (var t = 0; t < this.objects.length; t++) await this.objects[t].prepare(e);
+        }
+    }),
+==== core-1.0.102.js:20425 ====
+                this.threeObj.position.set(t[0], t[1], t[2]),
+                (t = this.properties.rotation.get(e)),
+                this.threeObj.rotation.set(t[0], t[1], t[2]),
+                (t = this.properties.scale.get(e)),
+                this.threeObj.scale.set(t[0], t[1], t[2]);
+            for (var r = 0; r < this.objects.length; r++) this.objects[r].update(e);
+        }
+        async prepare(e) {
+            for (var t = 0; t < this.objects.length; t++) await this.objects[t].prepare(e);
+        }
+    }),
+    (PZ.object3d.group.propertyDefinitions = {
+        name: { visible: false, name: "Name", type: PZ.property.type.TEXT, value: "Group" },
+        enabled: { dynamic: true, name: "Enabled", type: PZ.property.type.OPTION, value: 1, items: "off;on" },
+        reflectionVisibility: {
+            name: "Visibility",
+            type: PZ.property.type.OPTION,
+            value: 0,
+            changed: function () {
+                let e = this.parentObject;
+==== core-1.0.102.js:20583 ====
+                    (this.threeObj.right = 0.05 * t),
+                    (this.threeObj.top = 0.05 * r),
+                    (this.threeObj.bottom = -0.05 * r);
+            this.threeObj.updateProjectionMatrix();
+        }
+        update(e) {
+            let t;
+            (t = this.properties.position.get(e)),
+                this.threeObj.position.set(t[0], t[1], t[2]),
+                (t = this.properties.rotation.get(e)),
+                this.threeObj.rotation.set(t[0], t[1], t[2]);
+            let r = this.properties.shakeAmplitude.get(e),
+                i = e * (this.properties.shakeSpeed.get(e) / 30);
+            this.shake.shake(i, r, this.threeObj);
+        }
+    }),
+    (PZ.object3d.camera.propertyDefinitions = {
+        name: { visible: false, name: "Name", type: PZ.property.type.TEXT, value: "Camera" },
+        position: {
+            dynamic: true,
