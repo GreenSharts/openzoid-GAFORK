@@ -18765,6 +18765,14 @@ PZ.compositor.prototype = {
                             groundColor: PZ.property.create(PZ.object3d.light.propertyDefinitions.groundColor),
                             intensity: PZ.property.create(PZ.object3d.light.propertyDefinitions.intensity),
                         });
+                    break;
+                case 5:
+                    (t = "Ambient Light"),
+                        (this.threeObj = new THREE.AmbientLight(16777215, 1)),
+                        this.properties.addAll({
+                            color: PZ.property.create(PZ.object3d.light.propertyDefinitions.color),
+                            intensity: PZ.property.create(PZ.object3d.light.propertyDefinitions.intensity),
+                        });
             }
             this.properties.name.set(t),
                 this.objectType < 4 &&
