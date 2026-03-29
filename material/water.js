@@ -380,11 +380,15 @@ this.initWater = function() {
     this.threeObj.onBeforeCompile = (shader, renderer) => {
         // THREE r91: onBeforeCompile(shader, renderer)
         // Ensure we capture renderer correctly, if missing use fallback
-        this.renderer = renderer || (typeof window !== "undefined" && window.editor && window.editor.playback ? window.editor.playback.renderer : null);
-        if (this._lastRenderer !== this.renderer) {
+        let curRenderer = renderer || (typeof window !== "undefined" && window.editor && window.editor.playback ? window.editor.playback.renderer : null);
+        this.renderer = curRenderer;
+        if (this._lastRenderer !== curRenderer) {
             if (this._createRenderTargets) {
                 this._createRenderTargets();
-                this._lastRenderer = this.renderer;
+                if (this.initialPhaseTexture) {
+                    this.initialPhaseTexture.needsUpdate = true;
+                }
+                this._lastRenderer = curRenderer;
             }
         }
 
@@ -513,7 +517,7 @@ this.update = function (e) {
         renderer = this.renderer; // This is the WebGLRenderer given to us inside onBeforeCompile
     }
 
-if (!renderer) {
+    if (!renderer) {
         this._needsFFTUpdate = true;
         this._lastTime = e;
         return;
@@ -525,6 +529,9 @@ if (!renderer) {
             if (this._shader) {
                 this._shader.uniforms.u_displacementMap.value = this.displacementMapRenderTarget.texture;
                 this._shader.uniforms.u_normalMap.value = this.normalMapRenderTarget.texture;
+            }
+            if (this.initialPhaseTexture) {
+                this.initialPhaseTexture.needsUpdate = true;
             }
         }
         this._lastRenderer = renderer;
