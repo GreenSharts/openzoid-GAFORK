@@ -3981,6 +3981,7 @@ PZ.ui.objectTypes.set(PZ.object3d, [
             { name: "Point light", type: 3, data: { objectType: 2 } },
             { name: "Directional light", type: 3, data: { objectType: 3 } },
             { name: "Hemisphere light", type: 3, data: { objectType: 4 } },
+            { name: "Ambient light", type: 3, data: { objectType: 5 } },
         ],
     },
     { name: "Particles", desc: "A system of many animated sprites.", type: 4 },
@@ -12453,8 +12454,13 @@ PZ.ui.helper3d.prototype.objectsChanged = function () {
                     this.helper.children[0].onBeforeRender = function () {
                         this.parent.update();
                     };
+                    break;
+                case 5:
+                    break;
             }
-            this.viewport.threeObj.add(this.helper);
+            if (this.helper) {
+                this.viewport.threeObj.add(this.helper);
+            }
         } else {
             this.helper = new THREE.BoxHelper(e.threeObj);
             this.helper.layers.set(1);
