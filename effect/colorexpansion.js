@@ -1,6 +1,6 @@
-this.defaultName = "Mirror+";
+this.defaultName = "Color expansion";
 this.vertShader = this.parentProject.assets.createFromPreset(PZ.asset.type.SHADER, "/assets/shaders/vertex/common.glsl");
-this.fragShader = new PZ.asset.shader(`precision highp float; uniform sampler2D tDiffuse; varying vec2 vUv; uniform float segments; const float pi = 3.14159265358979323846264; const float two_pi = 2.0 * pi; void main(){ vec2 p = vUv - 0.5; float angle = atan(p.y, p.x); float radius = length(p); float segmentAngle = two_pi / segments; float adjustedAngle = angle + pi; float segmentId = floor(adjustedAngle / segmentAngle); float newAngle = mod(adjustedAngle, segmentAngle) - 0.5 * segmentAngle; vec2 newP = vec2(cos(newAngle), sin(newAngle)) * radius; vec2 newUV = newP + 0.5; vec4 texel = texture2D(tDiffuse, newUV); gl_FragColor = texel; }`);
+this.fragShader = new PZ.asset.shader(`precision highp float; uniform sampler2D tDiffuse; varying vec2 vUv; uniform float strength; void main(){ vec4 color = texture2D(tDiffuse, vUv); vec3 texel = color.rgb * (1.0 + strength); texel = clamp(texel , 0.0, 1.0); gl_FragColor = vec4(texel, color.a); }`);
 
 this.propertyDefinitions = {
     enabled: {
@@ -10,9 +10,9 @@ this.propertyDefinitions = {
         value: 1,
         items: "off;on",
     },
-    segments: {
+    strength: {
         dynamic: true,
-        name: "segments",
+        name: "strength",
         type: PZ.property.type.NUMBER,
         value: 1,
     },
@@ -28,7 +28,7 @@ this.load = async function (e) {
             tDiffuse: { type: "t", value: null },
             resolution: { type: "v2", value: new THREE.Vector2(100, 100) },
             uvScale: { type: "v2", value: new THREE.Vector2(1, 1) },
-            segments: { type: "f", value: 1.0 },
+            strength: { type: "f", value: 1.0 },
         },
         vertexShader: await this.vertShader.getShader(),
         fragmentShader: await this.fragShader.getShader(),
@@ -41,7 +41,7 @@ this.toJSON = function () { return { type: this.type, properties: this.propertie
 this.unload = function (e) { this.parentProject.assets.unload(this.vertShader); this.parentProject.assets.unload(this.fragShader); };
 this.update = function (e) {
     if (this.pass) {
-        this.pass.uniforms.segments.value = this.properties.segments.get(e);
+        this.pass.uniforms.strength.value = this.properties.strength.get(e);
         this.pass.enabled = this.properties.enabled.get(e) === 1;
     }
 };

@@ -1,6 +1,6 @@
-this.defaultName = "Glitch";
+this.defaultName = "Chromatic aberration";
 this.vertShader = this.parentProject.assets.createFromPreset(PZ.asset.type.SHADER, "/assets/shaders/vertex/common.glsl");
-this.fragShader = new PZ.asset.shader(`precision highp float;uniform sampler2D tDiffuse;varying vec2 vUv;uniform float strength;uniform float scanline;uniform float pixelation;uniform float noise;uniform float inversion;float random(vec2 st){return fract(sin(dot(st.xy, vec2(1, 100))) * 5000.0);}void main(){vec4 color = texture2D(tDiffuse, vUv);float pixelSize = 0.005 * pixelation;vec2 uvPixelated = floor(vUv / pixelSize) * pixelSize;vec4 pixelColor = texture2D(tDiffuse, uvPixelated);float glitchFactor = sin(vUv.y * 100.0) * scanline * 0.02;vec2 uvGlitch = vec2(fract(vUv.x + glitchFactor), vUv.y);vec4 glitchColor = texture2D(tDiffuse, uvGlitch);vec4 texel = mix(color, pixelColor, mix(1.0, scanline * 12.0, strength));texel.rgb = mix(texel.rgb, glitchColor.rgb, mix(1.0, scanline * 0.5, strength));float noiseValue = (random(vUv) - 0.5) * noise * 2.0;vec4 noiseColor = vec4(vec3(noiseValue), 1.0);texel.rgb += mix(vec3(0.0), noiseColor.rgb, strength);texel.rgb = mix(texel.rgb, 1.0 - texel.rgb, inversion * strength);gl_FragColor = mix(color, texel, strength);}`);
+this.fragShader = new PZ.asset.shader(`precision highp float; uniform sampler2D tDiffuse; varying vec2 vUv; uniform float strength; uniform float red; uniform float green; uniform float blue; void main() { vec2 centered = vUv - vec2(0.5, 0.5); float strength = strength * length(centered); vec2 redOffset = vUv + centered * red * 0.025 * strength; vec4 redColor = texture2D(tDiffuse, redOffset); vec2 greenOffset = vUv + centered * green * 0.025 * strength; vec4 greenColor = texture2D(tDiffuse, greenOffset); vec2 blueOffset = vUv + centered * blue * 0.025 * strength; vec4 blueColor = texture2D(tDiffuse, blueOffset); vec4 finalColor; finalColor.r = redColor.r; finalColor.g = greenColor.g; finalColor.b = blueColor.b; finalColor.a = (redColor.a + greenColor.a + blueColor.a) / 3.0; gl_FragColor = finalColor; }`);
 
 this.propertyDefinitions = {
     enabled: {
@@ -16,27 +16,21 @@ this.propertyDefinitions = {
         type: PZ.property.type.NUMBER,
         value: 1,
     },
-    scanline: {
+    red: {
         dynamic: true,
-        name: "scanline",
+        name: "red",
         type: PZ.property.type.NUMBER,
         value: 1,
     },
-    pixelation: {
+    green: {
         dynamic: true,
-        name: "pixelation",
+        name: "green",
         type: PZ.property.type.NUMBER,
         value: 1,
     },
-    noise: {
+    blue: {
         dynamic: true,
-        name: "noise",
-        type: PZ.property.type.NUMBER,
-        value: 1,
-    },
-    inversion: {
-        dynamic: true,
-        name: "inversion",
+        name: "blue",
         type: PZ.property.type.NUMBER,
         value: 1,
     },
@@ -53,10 +47,9 @@ this.load = async function (e) {
             resolution: { type: "v2", value: new THREE.Vector2(100, 100) },
             uvScale: { type: "v2", value: new THREE.Vector2(1, 1) },
             strength: { type: "f", value: 1.0 },
-            scanline: { type: "f", value: 1.0 },
-            pixelation: { type: "f", value: 1.0 },
-            noise: { type: "f", value: 1.0 },
-            inversion: { type: "f", value: 1.0 },
+            red: { type: "f", value: 1.0 },
+            green: { type: "f", value: 1.0 },
+            blue: { type: "f", value: 1.0 },
         },
         vertexShader: await this.vertShader.getShader(),
         fragmentShader: await this.fragShader.getShader(),
@@ -70,10 +63,9 @@ this.unload = function (e) { this.parentProject.assets.unload(this.vertShader); 
 this.update = function (e) {
     if (this.pass) {
         this.pass.uniforms.strength.value = this.properties.strength.get(e);
-        this.pass.uniforms.scanline.value = this.properties.scanline.get(e);
-        this.pass.uniforms.pixelation.value = this.properties.pixelation.get(e);
-        this.pass.uniforms.noise.value = this.properties.noise.get(e);
-        this.pass.uniforms.inversion.value = this.properties.inversion.get(e);
+        this.pass.uniforms.red.value = this.properties.red.get(e);
+        this.pass.uniforms.green.value = this.properties.green.get(e);
+        this.pass.uniforms.blue.value = this.properties.blue.get(e);
         this.pass.enabled = this.properties.enabled.get(e) === 1;
     }
 };

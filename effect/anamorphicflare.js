@@ -202,7 +202,7 @@ if (!THREE.ALFPass) {
         this.materialHighPassFilter = new THREE.ShaderMaterial({
             uniforms: this.highPassUniforms,
             vertexShader: u.vertexShader,
-            fragmentShader: u.fragmentShader,
+            fragmentShader: u.fragmentShader_
             defines: {},
         });
         this.separableBlurMaterials = [];

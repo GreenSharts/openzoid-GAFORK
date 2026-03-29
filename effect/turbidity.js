@@ -1,6 +1,6 @@
-this.defaultName = "Mirror+";
+this.defaultName = "Turbidity";
 this.vertShader = this.parentProject.assets.createFromPreset(PZ.asset.type.SHADER, "/assets/shaders/vertex/common.glsl");
-this.fragShader = new PZ.asset.shader(`precision highp float; uniform sampler2D tDiffuse; varying vec2 vUv; uniform float segments; const float pi = 3.14159265358979323846264; const float two_pi = 2.0 * pi; void main(){ vec2 p = vUv - 0.5; float angle = atan(p.y, p.x); float radius = length(p); float segmentAngle = two_pi / segments; float adjustedAngle = angle + pi; float segmentId = floor(adjustedAngle / segmentAngle); float newAngle = mod(adjustedAngle, segmentAngle) - 0.5 * segmentAngle; vec2 newP = vec2(cos(newAngle), sin(newAngle)) * radius; vec2 newUV = newP + 0.5; vec4 texel = texture2D(tDiffuse, newUV); gl_FragColor = texel; }`);
+this.fragShader = new PZ.asset.shader(`precision highp float;uniform sampler2D tDiffuse;varying vec2 vUvScaled;uniform float strength;uniform float rotation;uniform vec2 direction;void main(){vec4 texel=vec4(0.0);for(float i=-1.0;i<=1.0;i+=1.0){for(float j=-1.0;j<=1.0;j+=1.0){vec2 offset=vec2(i,j)*strength;vec2 rotatedOffset=vec2(offset.x*cos(rotation)-offset.y*sin(rotation),offset.x*sin(rotation)+offset.y*cos(rotation));vec2 scaledOffset=rotatedOffset*direction/10.0;texel+=texture2D(tDiffuse,vUvScaled+scaledOffset);}}gl_FragColor=texel/9.0;}`);
 
 this.propertyDefinitions = {
     enabled: {
@@ -10,11 +10,23 @@ this.propertyDefinitions = {
         value: 1,
         items: "off;on",
     },
-    segments: {
+    strength: {
         dynamic: true,
-        name: "segments",
+        name: "strength",
         type: PZ.property.type.NUMBER,
         value: 1,
+    },
+    rotation: {
+        dynamic: true,
+        name: "rotation",
+        type: PZ.property.type.NUMBER,
+        value: 1,
+    },
+    direction: {
+        dynamic: true,
+        name: "direction",
+        type: PZ.property.type.VECTOR2,
+        value: [0, 0],
     },
 };
 
@@ -28,7 +40,9 @@ this.load = async function (e) {
             tDiffuse: { type: "t", value: null },
             resolution: { type: "v2", value: new THREE.Vector2(100, 100) },
             uvScale: { type: "v2", value: new THREE.Vector2(1, 1) },
-            segments: { type: "f", value: 1.0 },
+            strength: { type: "f", value: 1.0 },
+            rotation: { type: "f", value: 1.0 },
+            direction: { type: "v2", value: new THREE.Vector2() },
         },
         vertexShader: await this.vertShader.getShader(),
         fragmentShader: await this.fragShader.getShader(),
@@ -41,7 +55,10 @@ this.toJSON = function () { return { type: this.type, properties: this.propertie
 this.unload = function (e) { this.parentProject.assets.unload(this.vertShader); this.parentProject.assets.unload(this.fragShader); };
 this.update = function (e) {
     if (this.pass) {
-        this.pass.uniforms.segments.value = this.properties.segments.get(e);
+        this.pass.uniforms.strength.value = this.properties.strength.get(e);
+        this.pass.uniforms.rotation.value = this.properties.rotation.get(e);
+        var _direction = this.properties.direction.get(e);
+        if (_direction) this.pass.uniforms.direction.value.set(_direction[0], _direction[1]);
         this.pass.enabled = this.properties.enabled.get(e) === 1;
     }
 };

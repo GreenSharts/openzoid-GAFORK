@@ -1,6 +1,6 @@
-this.defaultName = "Glitch";
+this.defaultName = "Light sweep";
 this.vertShader = this.parentProject.assets.createFromPreset(PZ.asset.type.SHADER, "/assets/shaders/vertex/common.glsl");
-this.fragShader = new PZ.asset.shader(`precision highp float;uniform sampler2D tDiffuse;varying vec2 vUv;uniform float strength;uniform float scanline;uniform float pixelation;uniform float noise;uniform float inversion;float random(vec2 st){return fract(sin(dot(st.xy, vec2(1, 100))) * 5000.0);}void main(){vec4 color = texture2D(tDiffuse, vUv);float pixelSize = 0.005 * pixelation;vec2 uvPixelated = floor(vUv / pixelSize) * pixelSize;vec4 pixelColor = texture2D(tDiffuse, uvPixelated);float glitchFactor = sin(vUv.y * 100.0) * scanline * 0.02;vec2 uvGlitch = vec2(fract(vUv.x + glitchFactor), vUv.y);vec4 glitchColor = texture2D(tDiffuse, uvGlitch);vec4 texel = mix(color, pixelColor, mix(1.0, scanline * 12.0, strength));texel.rgb = mix(texel.rgb, glitchColor.rgb, mix(1.0, scanline * 0.5, strength));float noiseValue = (random(vUv) - 0.5) * noise * 2.0;vec4 noiseColor = vec4(vec3(noiseValue), 1.0);texel.rgb += mix(vec3(0.0), noiseColor.rgb, strength);texel.rgb = mix(texel.rgb, 1.0 - texel.rgb, inversion * strength);gl_FragColor = mix(color, texel, strength);}`);
+this.fragShader = new PZ.asset.shader(`precision highp float;uniform sampler2D tDiffuse;varying vec2 vUv;uniform float strength;uniform vec2 position;uniform float width;uniform float feather;uniform float angle;uniform vec3 rgb;void main(){vec4 texel = texture2D(tDiffuse, vUv);float radians = radians(angle);float cosAngle = cos(radians);float sinAngle = sin(radians);vec2 rotatedUV = vec2(dot(vUv - position, vec2(cosAngle, sinAngle)), dot(vUv - position, vec2(-sinAngle, cosAngle)));float gradient = smoothstep(feather * 0.5, -feather * 0.5, abs(rotatedUV.y) - width * 0.025);gl_FragColor = texel + vec4(rgb, 1.0) * gradient * strength * texel.a;}`);
 
 this.propertyDefinitions = {
     enabled: {
@@ -16,29 +16,35 @@ this.propertyDefinitions = {
         type: PZ.property.type.NUMBER,
         value: 1,
     },
-    scanline: {
+    position: {
         dynamic: true,
-        name: "scanline",
+        name: "position",
+        type: PZ.property.type.VECTOR2,
+        value: [0, 0],
+    },
+    width: {
+        dynamic: true,
+        name: "width",
         type: PZ.property.type.NUMBER,
         value: 1,
     },
-    pixelation: {
+    angle: {
         dynamic: true,
-        name: "pixelation",
+        name: "angle",
         type: PZ.property.type.NUMBER,
         value: 1,
     },
-    noise: {
+    feather: {
         dynamic: true,
-        name: "noise",
+        name: "feather",
         type: PZ.property.type.NUMBER,
         value: 1,
     },
-    inversion: {
+    rgb: {
         dynamic: true,
-        name: "inversion",
-        type: PZ.property.type.NUMBER,
-        value: 1,
+        name: "rgb",
+        type: PZ.property.type.VECTOR3,
+        value: [0, 0, 0],
     },
 };
 
@@ -53,10 +59,11 @@ this.load = async function (e) {
             resolution: { type: "v2", value: new THREE.Vector2(100, 100) },
             uvScale: { type: "v2", value: new THREE.Vector2(1, 1) },
             strength: { type: "f", value: 1.0 },
-            scanline: { type: "f", value: 1.0 },
-            pixelation: { type: "f", value: 1.0 },
-            noise: { type: "f", value: 1.0 },
-            inversion: { type: "f", value: 1.0 },
+            position: { type: "v2", value: new THREE.Vector2() },
+            width: { type: "f", value: 1.0 },
+            angle: { type: "f", value: 1.0 },
+            feather: { type: "f", value: 1.0 },
+            rgb: { type: "v3", value: new THREE.Vector3() },
         },
         vertexShader: await this.vertShader.getShader(),
         fragmentShader: await this.fragShader.getShader(),
@@ -70,10 +77,13 @@ this.unload = function (e) { this.parentProject.assets.unload(this.vertShader); 
 this.update = function (e) {
     if (this.pass) {
         this.pass.uniforms.strength.value = this.properties.strength.get(e);
-        this.pass.uniforms.scanline.value = this.properties.scanline.get(e);
-        this.pass.uniforms.pixelation.value = this.properties.pixelation.get(e);
-        this.pass.uniforms.noise.value = this.properties.noise.get(e);
-        this.pass.uniforms.inversion.value = this.properties.inversion.get(e);
+        var _position = this.properties.position.get(e);
+        if (_position) this.pass.uniforms.position.value.set(_position[0], _position[1]);
+        this.pass.uniforms.width.value = this.properties.width.get(e);
+        this.pass.uniforms.angle.value = this.properties.angle.get(e);
+        this.pass.uniforms.feather.value = this.properties.feather.get(e);
+        var _rgb = this.properties.rgb.get(e);
+        if (_rgb) this.pass.uniforms.rgb.value.set(_rgb[0], _rgb[1], _rgb[2]);
         this.pass.enabled = this.properties.enabled.get(e) === 1;
     }
 };

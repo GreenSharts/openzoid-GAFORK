@@ -1,6 +1,6 @@
-this.defaultName = "Mirror+";
+this.defaultName = "Warp waves";
 this.vertShader = this.parentProject.assets.createFromPreset(PZ.asset.type.SHADER, "/assets/shaders/vertex/common.glsl");
-this.fragShader = new PZ.asset.shader(`precision highp float; uniform sampler2D tDiffuse; varying vec2 vUv; uniform float segments; const float pi = 3.14159265358979323846264; const float two_pi = 2.0 * pi; void main(){ vec2 p = vUv - 0.5; float angle = atan(p.y, p.x); float radius = length(p); float segmentAngle = two_pi / segments; float adjustedAngle = angle + pi; float segmentId = floor(adjustedAngle / segmentAngle); float newAngle = mod(adjustedAngle, segmentAngle) - 0.5 * segmentAngle; vec2 newP = vec2(cos(newAngle), sin(newAngle)) * radius; vec2 newUV = newP + 0.5; vec4 texel = texture2D(tDiffuse, newUV); gl_FragColor = texel; }`);
+this.fragShader = new PZ.asset.shader(`precision highp float; uniform sampler2D tDiffuse; varying vec2 vUv; uniform float strength; uniform float twist; uniform float time; void main(){ vec2 offset = vec2(sin(vUv.y * twist + time), sin(vUv.x * twist + time)); vec2 distortedUV = vUv + offset * strength / 5.0; vec4 texel = texture2D(tDiffuse, distortedUV); gl_FragColor = texel; }`);
 
 this.propertyDefinitions = {
     enabled: {
@@ -10,9 +10,21 @@ this.propertyDefinitions = {
         value: 1,
         items: "off;on",
     },
-    segments: {
+    strength: {
         dynamic: true,
-        name: "segments",
+        name: "strength",
+        type: PZ.property.type.NUMBER,
+        value: 1,
+    },
+    twist: {
+        dynamic: true,
+        name: "twist",
+        type: PZ.property.type.NUMBER,
+        value: 1,
+    },
+    time: {
+        dynamic: true,
+        name: "time",
         type: PZ.property.type.NUMBER,
         value: 1,
     },
@@ -28,7 +40,9 @@ this.load = async function (e) {
             tDiffuse: { type: "t", value: null },
             resolution: { type: "v2", value: new THREE.Vector2(100, 100) },
             uvScale: { type: "v2", value: new THREE.Vector2(1, 1) },
-            segments: { type: "f", value: 1.0 },
+            strength: { type: "f", value: 1.0 },
+            twist: { type: "f", value: 1.0 },
+            time: { type: "f", value: 1.0 },
         },
         vertexShader: await this.vertShader.getShader(),
         fragmentShader: await this.fragShader.getShader(),
@@ -41,7 +55,9 @@ this.toJSON = function () { return { type: this.type, properties: this.propertie
 this.unload = function (e) { this.parentProject.assets.unload(this.vertShader); this.parentProject.assets.unload(this.fragShader); };
 this.update = function (e) {
     if (this.pass) {
-        this.pass.uniforms.segments.value = this.properties.segments.get(e);
+        this.pass.uniforms.strength.value = this.properties.strength.get(e);
+        this.pass.uniforms.twist.value = this.properties.twist.get(e);
+        this.pass.uniforms.time.value = this.properties.time.get(e);
         this.pass.enabled = this.properties.enabled.get(e) === 1;
     }
 };

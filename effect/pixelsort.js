@@ -138,13 +138,13 @@ this.load = async function (e) {
         threshold: { type: "f", value: 0.5 },
     };
     let s = new THREE.ShaderMaterial({
-        uniforms: t,
+        uniforms: t_
         defines: { PASS_MAP: true, DIRECTION: 0, AFFECT: 0, REVERSE: 0 },
         vertexShader: await this.vertShader.getShader(),
         fragmentShader: await this.fragShader.getShader(),
     });
     let r = new THREE.ShaderMaterial({
-        uniforms: t,
+        uniforms: t_
         defines: { DIRECTION: 0 },
         vertexShader: await this.vertShader.getShader(),
         fragmentShader: await this.fragShader.getShader(),

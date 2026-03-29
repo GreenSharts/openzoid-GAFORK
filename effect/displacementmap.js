@@ -246,7 +246,7 @@ this.load = async function (e) {
         },
         vertexShader: await this.vertShader.getShader(),
         fragmentShader: await this.fragShader.getShader(),
-        premultipliedAlpha: true,
+        premultipliedAlpha: true_
         defines: { HAS_OFFSET: true },
     });
     this.pass = new THREE.ShaderPass(t);

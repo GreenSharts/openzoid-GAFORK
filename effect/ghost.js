@@ -1,6 +1,6 @@
-this.defaultName = "Mirror+";
+this.defaultName = "Ghost";
 this.vertShader = this.parentProject.assets.createFromPreset(PZ.asset.type.SHADER, "/assets/shaders/vertex/common.glsl");
-this.fragShader = new PZ.asset.shader(`precision highp float; uniform sampler2D tDiffuse; varying vec2 vUv; uniform float segments; const float pi = 3.14159265358979323846264; const float two_pi = 2.0 * pi; void main(){ vec2 p = vUv - 0.5; float angle = atan(p.y, p.x); float radius = length(p); float segmentAngle = two_pi / segments; float adjustedAngle = angle + pi; float segmentId = floor(adjustedAngle / segmentAngle); float newAngle = mod(adjustedAngle, segmentAngle) - 0.5 * segmentAngle; vec2 newP = vec2(cos(newAngle), sin(newAngle)) * radius; vec2 newUV = newP + 0.5; vec4 texel = texture2D(tDiffuse, newUV); gl_FragColor = texel; }`);
+this.fragShader = new PZ.asset.shader(`precision highp float;uniform sampler2D tDiffuse;varying vec2 vUv;uniform float scale;uniform float intensity;uniform vec2 position;uniform vec3 tint;void main(){vec2 offset=vUv-position;float distance=length(offset);vec2 direction=normalize(offset);vec2 extrudeUV=position+direction*distance*(1.0-scale);if(extrudeUV.x<0.0||extrudeUV.x>1.0||extrudeUV.y<0.0||extrudeUV.y>1.0){discard;}vec4 color=texture2D(tDiffuse,vUv);vec4 extrudeColor=texture2D(tDiffuse,extrudeUV);vec4 texel=mix(color,extrudeColor,intensity);texel.rgb+=tint;gl_FragColor=texel;}`);
 
 this.propertyDefinitions = {
     enabled: {
@@ -10,11 +10,23 @@ this.propertyDefinitions = {
         value: 1,
         items: "off;on",
     },
-    segments: {
+    scale: {
         dynamic: true,
-        name: "segments",
+        name: "scale",
         type: PZ.property.type.NUMBER,
         value: 1,
+    },
+    intensity: {
+        dynamic: true,
+        name: "intensity",
+        type: PZ.property.type.NUMBER,
+        value: 1,
+    },
+    position: {
+        dynamic: true,
+        name: "position",
+        type: PZ.property.type.VECTOR2,
+        value: [0, 0],
     },
 };
 
@@ -28,7 +40,9 @@ this.load = async function (e) {
             tDiffuse: { type: "t", value: null },
             resolution: { type: "v2", value: new THREE.Vector2(100, 100) },
             uvScale: { type: "v2", value: new THREE.Vector2(1, 1) },
-            segments: { type: "f", value: 1.0 },
+            scale: { type: "f", value: 1.0 },
+            intensity: { type: "f", value: 1.0 },
+            position: { type: "v2", value: new THREE.Vector2() },
         },
         vertexShader: await this.vertShader.getShader(),
         fragmentShader: await this.fragShader.getShader(),
@@ -41,7 +55,10 @@ this.toJSON = function () { return { type: this.type, properties: this.propertie
 this.unload = function (e) { this.parentProject.assets.unload(this.vertShader); this.parentProject.assets.unload(this.fragShader); };
 this.update = function (e) {
     if (this.pass) {
-        this.pass.uniforms.segments.value = this.properties.segments.get(e);
+        this.pass.uniforms.scale.value = this.properties.scale.get(e);
+        this.pass.uniforms.intensity.value = this.properties.intensity.get(e);
+        var _position = this.properties.position.get(e);
+        if (_position) this.pass.uniforms.position.value.set(_position[0], _position[1]);
         this.pass.enabled = this.properties.enabled.get(e) === 1;
     }
 };

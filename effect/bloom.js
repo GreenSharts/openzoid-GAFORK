@@ -226,7 +226,7 @@ if (!THREE.UnrealBloomPass) {
         this.materialHighPassFilter = new THREE.ShaderMaterial({
             uniforms: this.highPassUniforms,
             vertexShader: h.vertexShader,
-            fragmentShader: h.fragmentShader,
+            fragmentShader: h.fragmentShader_
             defines: {},
         });
         this.separableBlurMaterials = [];
