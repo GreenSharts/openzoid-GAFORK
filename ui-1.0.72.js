@@ -5800,8 +5800,10 @@ PZ.ui.viewport.prototype.resize = function () {
     this.canvas.style.height = a + "px";
     this.canvas.style.left = 0.5 * (s.width - r) + "px";
     this.canvas.style.top = 0.5 * (s.height - a) + "px";
-    let o = Math.round(r * window.devicePixelRatio);
-    let l = Math.round(a * window.devicePixelRatio);
+    // Quality scaling option (1 = native pixel ratio, 0.5 = half resolution, etc.)
+    let qualityScale = window.pz_renderQuality || 1;
+    let o = Math.round(r * window.devicePixelRatio * qualityScale);
+    let l = Math.round(a * window.devicePixelRatio * qualityScale);
     this.renderer.setDrawingBufferSize(o, l, 1);
     this.compositor.setSize(this.canvas.width, this.canvas.height);
     this.camera.aspect = this.canvas.width / this.canvas.height;

@@ -151,6 +151,24 @@ CM.setUpEditor = function (currentAccount) {
         },
         { separator: true },
         {
+            title: "Toggle Render Quality (Q)",
+            icon: "menu", // Just reusing an existing icon for now
+            key: "q",
+            update: function (e) {
+                let q = window.pz_renderQuality || 1;
+                e.children[0].style.fill = q === 1 ? "#acacac" : (q === 0.5 ? "#1c7cd6" : "#8a2828");
+                e.title = "Render Quality: " + (q === 1 ? "High" : (q === 0.5 ? "Medium" : "Low"));
+            },
+            fn: function () {
+                let q = window.pz_renderQuality || 1;
+                if (q === 1) window.pz_renderQuality = 0.5;
+                else if (q === 0.5) window.pz_renderQuality = 0.25;
+                else window.pz_renderQuality = 1;
+                window.dispatchEvent(new Event('resize'));
+            },
+        },
+        { separator: true },
+        {
             title: "start (home)",
             icon: "start",
             key: "Home",
@@ -351,7 +369,16 @@ CM.setUpEditor = function (currentAccount) {
     let splitPanelBottom = new PZ.ui.splitPanel(CM, transportBarToolbar, splitPanelTimeline, 0, 0);
     let splitPanelRight = new PZ.ui.splitPanel(CM, splitPanelViewport, splitPanelBottom, 0.65, 0);
     let splitPanelLeft = new PZ.ui.splitPanel(CM, toolbarMenuBarSplit, splitPanelRight, 0.3, 1);
-    mainWindow.setPanel(splitPanelLeft);
+
+    // Check if on mobile to set appropriate layout
+    if (window.innerWidth <= 768) {
+        // Top: Viewport, Middle: Timeline/Audio, Bottom: Elevator
+        let splitPanelTopBottom = new PZ.ui.splitPanel(CM, splitPanelViewport, splitPanelBottom, 0.4, 0);
+        let splitPanelMainMobile = new PZ.ui.splitPanel(CM, splitPanelTopBottom, toolbarMenuBarSplit, 0.6, 0);
+        mainWindow.setPanel(splitPanelMainMobile);
+    } else {
+        mainWindow.setPanel(splitPanelLeft);
+    }
 };
 
 CM.defaultProject = {
