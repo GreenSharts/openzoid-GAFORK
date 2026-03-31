@@ -1,9 +1,6 @@
 const PZTOOLVERSION = "3.0.106";
 var CM = new PZ.ui.editor();
 CM.name = "openzoid (Clipmaker 3)";
-var BG = {}; // What does this do ? only one use, worth removing ? - blulere 2025-02-13
-// Likely a stub from Backgrounder, could be removed in unminified, definitely should be removed in main - blulere 2025-02-14
-
 async function initTool() {
     let currentAccount = await PZ.account.getCurrent();
     CM.setUpEditor(currentAccount);
@@ -434,19 +431,3 @@ CM.defaultProject = {
         },
     ],
 };
-
-/*
-BG.defaultProject = {
-    sequence: {
-        properties: {
-            resolution: [1920, 1080],
-            rate: 1,
-        },
-        length: 1,
-        videoTracks: [{ clips: [{ start: 0, length: 1, offset: 0, type: 0, link: null, object: { type: 2, properties: { name: "Image" }, objects: [], effects: [] } }] }],
-        audioTracks: [],
-    },
-    assets: {},
-    media: [],
-};
-*/
