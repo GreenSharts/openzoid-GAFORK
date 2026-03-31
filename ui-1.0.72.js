@@ -12945,7 +12945,15 @@ PZ.ui.export.cloud = class {
                 e.style = "padding: 10px; color: #ccc;";
                 if (this.connections) {
                     const t = await PZ.account.getCurrent();
-                    e.innerHTML = `<a href="/users/${t.name}/connections" target="_blank" style="color:#ccc; text-decoration: underline;">Connect an account</a> to use it as a destination.`;
+                    const a = document.createElement("a");
+                    a.href = `/users/${encodeURIComponent(t.name)}/connections`;
+                    a.target = "_blank";
+                    a.style = "color:#ccc; text-decoration: underline;";
+                    a.textContent = "Connect an account";
+                    e.appendChild(a);
+                    e.appendChild(
+                        document.createTextNode(" to use it as a destination.")
+                    );
                 } else {
                     e.innerHTML =
                         "There was a problem loading your connections.";
