@@ -1348,6 +1348,9 @@ PZ.ui.switchIcon = function (icon, name) {
 };
 
 PZ.dateString = function (e) {
+    if (!(e instanceof Date) || isNaN(e.getTime())) {
+        return "Invalid Date";
+    }
     return e.toLocaleDateString(undefined, {
         month: "short",
         day: "numeric",
