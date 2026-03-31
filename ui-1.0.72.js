@@ -2102,6 +2102,15 @@ PZ.ui.elevator = class extends PZ.ui.panel {
             t.appendChild(e);
             let s = document.createElement("a");
             s.setAttribute("title", this.panels[i].title);
+            if(PZ.ui.generateIcon) s.appendChild(PZ.ui.generateIcon(this.panels[i].icon || "folder"));
+            let span = document.createElement("span");
+            span.innerText = this.panels[i].title;
+            span.style.fontSize = "9px";
+            span.style.fontWeight = "bold";
+            span.style.textTransform = "uppercase";
+            span.style.letterSpacing = "1px";
+            span.style.marginTop = "2px";
+            s.appendChild(span);
             s.pz_tab = this.panels[i];
             s.pz_tab.editor = this.editor;
             s.pz_container = e;
@@ -9731,6 +9740,7 @@ PZ.ui.timeline.tracks.prototype.create = function () {
     this.audioLabels.addEventListener("wheel", t);
     this.labels.appendChild(this.audioLabels);
     this.videoContainer = document.createElement("div");
+        this.videoContainer.classList.add("pz-video-container");
     this.videoContainer.style =
         "overflow-y: scroll; overflow-x: hidden; left: 0; right: 0; top: 0; position: absolute;";
     this.videoContainer.scrollBottom = 0;
