@@ -16635,7 +16635,7 @@ PZ.compositor.prototype = {
             this.scene.updateMatrixWorld(),
                 this.scene.traverse((e) => {
                     let t = this.prevModelViewMatrix.get(e);
-                    t || ((t = new THREE.Matrix4()), this.prevModelViewMatrix.set(t)),
+                    t || ((t = new THREE.Matrix4()), this.prevModelViewMatrix.set(e, t)),
                         t.multiplyMatrices(this.layer.pass.camera.matrixWorldInverse, e.matrixWorld),
                         (e.onBeforeRender = (e, r, i, a, s, n) => {
                             s === this.velocityShader && s.uniforms.prevModelViewMatrix.value.copy(t);
@@ -21259,8 +21259,13 @@ PZ.shape.path = class extends PZ.shape {
         let i = this.properties.position.get(e);
         let a = this.properties.rotation.get(e);
         let s = this.properties.scale.get(e);
-        let n = Math.cos(a);
-        let o = Math.sin(a);
+        if (a !== this.lastA) {
+            this.lastA = a;
+            this.cachedCos = Math.cos(a);
+            this.cachedSin = Math.sin(a);
+        }
+        let n = this.cachedCos;
+        let o = this.cachedSin;
         t.transform(
             s[0] * n,
             -s[0] * o,
