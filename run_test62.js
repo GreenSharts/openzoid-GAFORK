@@ -1,0 +1,10 @@
+console.log("No, `PZ.layer.scene.prototype.unload` only unloads `this.objects` and calls `super.unload()`!");
+console.log("It does NOT dispose `this.pass` (the `THREE.RenderPass`)! Or `this.motionBlur` or `this.envMap`.");
+console.log("Does `THREE.RenderPass` have a `dispose()` method in ThreeJS?");
+console.log("Wait, `THREE.RenderPass` is a custom Pass in PostProcessing, it doesn't allocate render targets, it just renders.");
+console.log("BUT `this.motionBlur` DOES allocate a render target! `this.velocityBuffer`.");
+console.log("And `this.envMap` DOES allocate a render target! `this.mirrorCubeCamera.renderTarget`.");
+console.log("If these are NEVER disposed, duplicating and deleting scenes will leak HUGE amounts of VRAM! (944x531 velocityBuffer, 256x256x6 envMap).");
+console.log("Wait... What about `this.threeObj` (the `THREE.Scene`)? It's not disposed.");
+console.log("It seems like `PZ.layer.scene.unload()` should call `this.motionBlur.unload()` and `this.envMap.unload()` if they exist, to prevent memory leaks.");
+console.log("Let's add `this.motionBlur && this.motionBlur.unload(); this.envMap && this.envMap.unload();` to `PZ.layer.scene.prototype.unload`.");

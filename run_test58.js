@@ -1,0 +1,10 @@
+console.log("Yes, `PZ.motionBlur` uses reference counting too. So it only allocates `velocityBuffer` if it's actually requested by `getTexture` (e.g. an effect uses it).");
+console.log("So memory leak isn't the DIRECT cause of `this.objects[0]` being undefined, nor the 'ghost like state' directly originating from `motionBlur` if it's unused.");
+console.log("Wait, what if 'ghost like state' IS due to `PZ.motionBlur` and the user IS using Motion Blur? Panzoid enables motion blur by default in some cases, or the user adds the Motion Blur effect.");
+console.log("If the user duplicates a scene, DOES `motionBlur` keep references to the old objects?");
+console.log("Look at `PZ.motionBlur.update`:");
+console.log("`this.scene.traverse((e) => { let t = this.prevModelViewMatrix.get(e); ... })`");
+console.log("`this.prevModelViewMatrix` is a `WeakMap`. `e` is the `THREE.Object3D` of the duplicate scene.");
+console.log("Wait. The new scene creates new `THREE.Object3D` instances for all its children (`PZ.object3d.create` is called).");
+console.log("Does it? YES, `PZ.object3d.create` creates a NEW `PZ.object3d`, which does `this.threeObj = new THREE.Object3D()` inside its `changeObjectType` or constructor.");
+console.log("Let's double check `PZ.object3d.group.load`.");

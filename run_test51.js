@@ -1,0 +1,14 @@
+console.log("No, `PZ.shape.create` creates a NEW `PZ.shape.group` or `PZ.shape.path`.");
+console.log("What about `PZ.layer.scene`?");
+console.log("It creates `this.threeObj = new THREE.Scene()`.");
+console.log("And for objects in it: `PZ.object3d.create` creates NEW `PZ.object3d` instances.");
+console.log("Is there ANY `THREE` object that is shared?");
+console.log("Maybe materials? Wait, `PZ.object3d.shape` has `this.materials = new PZ.objectSingleton(this, PZ.material);`");
+console.log("If a `PZ.layer` is duplicated using `JSON.parse(JSON.stringify(t))`, the materials are saved as `{ type: ..., properties: ... }`.");
+console.log("When loaded, `PZ.material.create` is called, creating a NEW `PZ.material` which creates a NEW `THREE.Material`.");
+console.log("Wait... What if it's an ASSET? E.g., `PZ.layer.image` texture or `PZ.asset`.");
+console.log("Assets are retrieved using `this.parentProject.assets.load(...)`.");
+console.log("This returns the SAME `PZ.asset` instance for the SAME key.");
+console.log("Then `PZ.layer.image` does `this.image = new PZ.asset.image(e); this.texture = this.image.getTexture();`");
+console.log("`this.image.getTexture()` does `r = this.getImage(); t = new THREE.Texture(r);`");
+console.log("So it creates a NEW `THREE.Texture` every time!");

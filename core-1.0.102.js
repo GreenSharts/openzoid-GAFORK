@@ -15960,6 +15960,11 @@ PZ.compositor.prototype = {
                 this.screenBuffers[e].dispose();
             }
         }
+        for (let e = 0; e < this.accumBuffers.length; e++) {
+            if (this.accumBuffers[e]) {
+                this.accumBuffers[e].dispose();
+            }
+        }
         this.canvas = null;
     },
 };
@@ -16881,7 +16886,10 @@ PZ.compositor.prototype = {
             return (
                 ISNODE
                     ? (((t = new THREE.DataTexture()).image = r), (t.magFilter = THREE.LinearFilter))
-                    : (t = new THREE.Texture(r)),
+                    : ((t = new THREE.Texture(r)),
+                      (t.minFilter = THREE.LinearFilter),
+                      (t.magFilter = THREE.LinearFilter),
+                      (t.generateMipmaps = false)),
                 this.data.loading.then(function () {
                     r.width > 0 && r.height > 0 && (t.needsUpdate = true);
                 }),
@@ -17952,6 +17960,8 @@ PZ.compositor.prototype = {
         }
         unload() {
             for (let e = 0; e < this.objects.length; e++) this.objects[e].unload();
+            this.motionBlur && this.motionBlur.unload();
+            this.envMap && this.envMap.unload();
             super.unload();
         }
         toJSON() {
@@ -18083,7 +18093,7 @@ PZ.compositor.prototype = {
         }
         toJSON() {
             let e = super.toJSON();
-            return (e.objects = [PZ.shape.prototype.toJSON.call(this.objects[0])]), e;
+            return (e.objects = this.objects[0] ? [PZ.shape.prototype.toJSON.call(this.objects[0])] : []), e;
         }
         updateShapes() {
             for (; this.objects[0].objects.length; )
@@ -18150,7 +18160,7 @@ PZ.compositor.prototype = {
         }
         toJSON() {
             let e = super.toJSON();
-            return (e.objects = [PZ.shape.prototype.toJSON.call(this.objects[0])]), e;
+            return (e.objects = this.objects[0] ? [PZ.shape.prototype.toJSON.call(this.objects[0])] : []), e;
         }
         unload() {
             this.font && this.parentProject.assets.unload(this.font), super.unload();
