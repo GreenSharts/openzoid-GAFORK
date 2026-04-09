@@ -2,6 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 const assert = require('assert');
+const vm = require('vm');
 
 // 1. Mock PZ object
 const PZ = {};
@@ -15,8 +16,8 @@ if (!match) {
     throw new Error("Could not find PZ.dateString in ui-1.0.72.js");
 }
 
-// Evaluate the extracted function in this context
-eval(match[0]);
+// Evaluate the extracted function in a controlled context
+vm.runInNewContext(match[0], { PZ, Date });
 
 function runTests() {
     console.log("Running PZ.dateString tests with extracted code...");
