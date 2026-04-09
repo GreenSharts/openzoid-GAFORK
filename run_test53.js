@@ -1,0 +1,13 @@
+console.log("Wait, if `PZ.object3d.text` was used, does IT have `this.objects`? No, it has `this.materials`.");
+console.log("Does it have `this.objects`? No, it inherits from `PZ.object3d` which doesn't have `this.objects` by default.");
+console.log("So the error `Cannot read properties of undefined (reading 'type') at toJSON` at `PZ.layer.shape.text.toJSON` MUST mean there WAS a `PZ.layer.shape.text`!");
+console.log("So the user is duplicating a `PZ.layer.shape.text` layer, NOT a text inside a scene! A 2D text layer!");
+console.log("If a layer is duplicated, it's pushed as a clip!");
+console.log("Wait, if a layer is in a 'ghost like state (more blurry)', could it be `PZ.layer.scene` or `PZ.layer.shape`?");
+console.log("A 2D layer doesn't have motion blur (no `velocityBuffer`), but `PZ.layer.scene` does.");
+console.log("If the user duplicated a scene layer (`PZ.layer.scene`), and the scene got into a ghost state, what could cause that?");
+console.log("What if the `PZ.motionBlur` renders into the SAME target?");
+console.log("We checked `this.velocityBuffer = new THREE.WebGLRenderTarget()`. It creates a NEW one for each `PZ.motionBlur` instance.");
+console.log("But what if `this.threeObj` (the `THREE.Scene`) gets duplicated, but some textures inside are shared?");
+console.log("Yes, `THREE.Texture` objects might be shared if `PZ.asset` caches them!");
+console.log("Wait, `this.parentProject.assets.load` caches `PZ.asset` objects. But does `PZ.asset.image.getTexture()` return a NEW texture or the SAME texture?");
