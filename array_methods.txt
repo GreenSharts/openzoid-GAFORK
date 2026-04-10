@@ -1,435 +1,435 @@
 
-==== core-1.0.102.js:1151 ====
+==== core-1.1.0.js:1151 ====
 (this.curLine = this.input.slice(0, this.lineStart).split(P).length))
 
-==== core-1.0.102.js:1166 ====
+==== core-1.1.0.js:1166 ====
 0 === this.pos && e.allowHashBang && "#!" === this.input.slice(0, 2) && this.skipLineComment(2),
 
-==== core-1.0.102.js:1229 ====
+==== core-1.1.0.js:1229 ====
 var t = z.exec(this.input.slice(e));
 
-==== core-1.0.102.js:1251 ====
+==== core-1.1.0.js:1251 ====
 P.test(this.input.slice(this.lastTokEnd, this.start))
 
-==== core-1.0.102.js:1332 ====
+==== core-1.1.0.js:1332 ====
 var s = this.input.slice(t, i);
 
-==== core-1.0.102.js:1343 ====
+==== core-1.1.0.js:1343 ====
 P.test(this.input.slice(this.pos, t)) ||
 
-==== core-1.0.102.js:1344 ====
+==== core-1.1.0.js:1344 ====
 "function" !== this.input.slice(t, t + 8) ||
 
-==== core-1.0.102.js:1543 ====
+==== core-1.1.0.js:1543 ====
 P.test(this.input.slice(this.lastTokEnd, this.start)) &&
 
-==== core-1.0.102.js:1969 ====
+==== core-1.1.0.js:1969 ====
 e[t].directive = e[t].expression.raw.slice(1, -1);
 
-==== core-1.0.102.js:2337 ====
+==== core-1.1.0.js:2337 ====
 ")" !== this.input.slice(this.lastTokStart, this.lastTokEnd);
 
-==== core-1.0.102.js:2356 ====
+==== core-1.1.0.js:2356 ====
 "async" === this.input.slice(e.start, e.end),
 
-==== core-1.0.102.js:2490 ====
+==== core-1.1.0.js:2490 ====
 (t.raw = this.input.slice(this.start, this.end)),
 
-==== core-1.0.102.js:2596 ====
+==== core-1.1.0.js:2596 ====
 raw: this.input.slice(this.start, this.end).replace(/\r\n?/g, "\n"),
 
-==== core-1.0.102.js:2630 ====
+==== core-1.1.0.js:2630 ====
 !P.test(this.input.slice(this.lastTokEnd, this.start))
 
-==== core-1.0.102.js:2840 ====
+==== core-1.1.0.js:2840 ====
 !(this.options.ecmaVersion < 6 && -1 !== this.input.slice(t, r).indexOf("\\")))
 
-==== core-1.0.102.js:3009 ====
+==== core-1.1.0.js:3009 ====
 ? P.test(this.input.slice(this.lastTokEnd, this.start))
 
-==== core-1.0.102.js:3061 ====
+==== core-1.1.0.js:3061 ====
 (e === x._return && P.test(this.input.slice(this.lastTokEnd, this.start))) ||
 
-==== core-1.0.102.js:4198 ====
+==== core-1.1.0.js:4198 ====
 this.options.onComment(true, this.input.slice(r + 2, i), r, this.pos, t, this.curPosition());
 
-==== core-1.0.102.js:4212 ====
+==== core-1.1.0.js:4212 ====
 this.input.slice(t + e, this.pos),
 
-==== core-1.0.102.js:4303 ====
+==== core-1.1.0.js:4303 ====
 (0 !== this.lastTokEnd && !P.test(this.input.slice(this.lastTokEnd, this.pos)))
 
-==== core-1.0.102.js:4406 ====
+==== core-1.1.0.js:4406 ====
 var r = this.input.slice(this.pos, this.pos + t);
 
-==== core-1.0.102.js:4422 ====
+==== core-1.1.0.js:4422 ====
 var a = this.input.slice(r, this.pos);
 
-==== core-1.0.102.js:4459 ====
+==== core-1.1.0.js:4459 ====
 r && /[89]/.test(this.input.slice(t, this.pos)) && (r = false);
 
-==== core-1.0.102.js:4467 ====
+==== core-1.1.0.js:4467 ====
 var a = this.input.slice(t, this.pos),
 
-==== core-1.0.102.js:4489 ====
+==== core-1.1.0.js:4489 ====
 ? ((t += this.input.slice(r, this.pos)), (t += this.readEscapedChar(false)), (r = this.pos))
 
-==== core-1.0.102.js:4494 ====
+==== core-1.1.0.js:4494 ====
 return (t += this.input.slice(r, this.pos++)), this.finishToken(x.string, t);
 
-==== core-1.0.102.js:4517 ====
+==== core-1.1.0.js:4517 ====
 ? ((e += this.input.slice(t, this.pos)), this.finishToken(x.template, e))
 
-==== core-1.0.102.js:4522 ====
+==== core-1.1.0.js:4522 ====
 (e += this.input.slice(t, this.pos)), (e += this.readEscapedChar(true)), (t = this.pos);
 
-==== core-1.0.102.js:4524 ====
+==== core-1.1.0.js:4524 ====
 switch (((e += this.input.slice(t, this.pos)), ++this.pos, r)) {
 
-==== core-1.0.102.js:4546 ====
+==== core-1.1.0.js:4546 ====
 return this.finishToken(x.invalidTemplate, this.input.slice(this.start, this.pos));
 
-==== core-1.0.102.js:4578 ====
+==== core-1.1.0.js:4578 ====
 i > 255 && ((r = r.slice(0, -1)), (i = parseInt(r, 8))),
 
-==== core-1.0.102.js:4609 ====
+==== core-1.1.0.js:4609 ====
 (this.containsEsc = true), (e += this.input.slice(r, this.pos));
 
-==== core-1.0.102.js:4621 ====
+==== core-1.1.0.js:4621 ====
 return e + this.input.slice(r, this.pos);
 
-==== core-1.0.102.js:5279 ====
+==== core-1.1.0.js:5279 ====
 (this.output += e), this.map(e, t);
 
-==== core-1.0.102.js:5282 ====
+==== core-1.1.0.js:5282 ====
 this.output.write(e), this.map(e, t);
 
-==== core-1.0.102.js:5427 ====
+==== core-1.1.0.js:5427 ====
 (this.value = Array.isArray(e.value) ? e.value.slice() : e.value),
 
-==== core-1.0.102.js:5598 ====
+==== core-1.1.0.js:5598 ====
 return Array.isArray(e) ? e.slice() : e;
 
-==== core-1.0.102.js:5709 ====
+==== core-1.1.0.js:5709 ====
 ((e.objects = e.objects || new Array(this.objects.length).fill(null).map((e) => new Object())),
 
-==== core-1.0.102.js:5713 ====
+==== core-1.1.0.js:5713 ====
 e.objects[t].keyframes = e.keyframes.map((e) => ({
 
-==== core-1.0.102.js:6719 ====
+==== core-1.1.0.js:6719 ====
 a.readAsArrayBuffer(i.slice(t, t + e.length));
 
-==== core-1.0.102.js:6940 ====
+==== core-1.1.0.js:6940 ====
 ? l.dest.slice(0, l.destLen)
 
-==== core-1.0.102.js:9350 ====
+==== core-1.1.0.js:9350 ====
 this.names = ce.slice();
 
-==== core-1.0.102.js:11477 ====
+==== core-1.1.0.js:11477 ====
 r.names = ce.slice();
 
-==== core-1.0.102.js:12195 ====
+==== core-1.1.0.js:12195 ====
 ? e.scripts.map(function (e) {
 
-==== core-1.0.102.js:12441 ====
+==== core-1.1.0.js:12441 ====
 o = t.sub.slice(1),
 
-==== core-1.0.102.js:13010 ====
+==== core-1.1.0.js:13010 ====
 (this.backtrack = e.slice(0, t)),
 
-==== core-1.0.102.js:13011 ====
+==== core-1.1.0.js:13011 ====
 (this.lookahead = e.slice(t + 1));
 
-==== core-1.0.102.js:13420 ====
+==== core-1.1.0.js:13420 ====
 (t.ip = a), (t.funcs[s] = i.slice(n + 1, a));
 
-==== core-1.0.102.js:13957 ====
+==== core-1.1.0.js:13957 ====
 r = e.map(function (e) {
 
-==== core-1.0.102.js:13958 ====
+==== core-1.1.0.js:13958 ====
 return t[e[0]].apply(t, e.slice(1).concat(true));
 
-==== core-1.0.102.js:13966 ====
+==== core-1.1.0.js:13966 ====
 report: r.filter(i),
 
-==== core-1.0.102.js:13969 ====
+==== core-1.1.0.js:13969 ====
 r.filter(function (e) {
 
-==== core-1.0.102.js:14035 ====
+==== core-1.1.0.js:14035 ====
 (this.backtrack = this.context.slice(0, e)),
 
-==== core-1.0.102.js:14036 ====
+==== core-1.1.0.js:14036 ====
 (this.lookahead = this.context.slice(e + 1));
 
-==== core-1.0.102.js:14043 ====
+==== core-1.1.0.js:14043 ====
 return this.backtrack.slice(e)[0];
 
-==== core-1.0.102.js:14053 ====
+==== core-1.1.0.js:14053 ====
 .map(function (e) {
 
-==== core-1.0.102.js:14060 ====
+==== core-1.1.0.js:14060 ====
 .map(function (e) {
 
-==== core-1.0.102.js:14096 ====
+==== core-1.1.0.js:14096 ====
 return [].concat(this.tokens.slice(e.startIndex, t));
 
-==== core-1.0.102.js:14111 ====
+==== core-1.1.0.js:14111 ====
 var e = this.tokens.map(function (e) {
 
-==== core-1.0.102.js:14213 ====
+==== core-1.1.0.js:14213 ====
 r.map(function (e) {
 
-==== core-1.0.102.js:14388 ====
+==== core-1.1.0.js:14388 ====
 (this.inputCoverage = r.inputCoverage.map(function (e) {
 
-==== core-1.0.102.js:14392 ====
+==== core-1.1.0.js:14392 ====
 (this.backtrackCoverage = r.backtrackCoverage.map(function (e) {
 
-==== core-1.0.102.js:14396 ====
+==== core-1.1.0.js:14396 ====
 (this.lookaheadCoverage = r.lookaheadCoverage.map(function (e) {
 
-==== core-1.0.102.js:14403 ====
+==== core-1.1.0.js:14403 ====
 (this.subtables = t[e].subtables.map(function (r) {
 
-==== core-1.0.102.js:14408 ====
+==== core-1.1.0.js:14408 ====
 this.lookups = t.map(function (t) {
 
-==== core-1.0.102.js:14546 ====
+==== core-1.1.0.js:14546 ====
 n = e.lookahead.map(function (e) {
 
-==== core-1.0.102.js:14582 ====
+==== core-1.1.0.js:14582 ====
 for (var a = e.lookahead.slice(i); a.length && Nr(a[0].char); ) a.shift();
 
-==== core-1.0.102.js:14675 ====
+==== core-1.1.0.js:14675 ====
 (t = r.map(function (e) {
 
-==== core-1.0.102.js:14709 ====
+==== core-1.1.0.js:14709 ====
 ["init", "medi", "fina", "rlig"].map(function (e) {
 
-==== core-1.0.102.js:15367 ====
+==== core-1.1.0.js:15367 ====
 (-1 !== (o = r.indexOf(".")) ? ((s = r.slice(0, o)), (n = r.slice(o + 1))) : (s = r),
 
-==== core-1.0.102.js:16309 ====
+==== core-1.1.0.js:16309 ====
 var i = e.slice(0),
 
-==== core-1.0.102.js:16526 ====
+==== core-1.1.0.js:16526 ====
 let i = e.slice(262144 * n, 262144 * (n + 1)),
 
-==== core-1.0.102.js:16764 ====
+==== core-1.1.0.js:16764 ====
 var n = ("00000000" + a[s].toString(16)).slice(-8);
 
-==== core-1.0.102.js:16770 ====
+==== core-1.1.0.js:16770 ====
 i.readAsArrayBuffer(e.slice(0, 268435456));
 
-==== core-1.0.102.js:17162 ====
+==== core-1.1.0.js:17162 ====
 t = p.slice(7, -1);
 
-==== core-1.0.102.js:17165 ====
+==== core-1.1.0.js:17165 ====
 a[0] = l.slice(1).map(Number);
 
-==== core-1.0.102.js:17168 ====
+==== core-1.1.0.js:17168 ====
 a[1] = l.slice(1).map(Number);
 
-==== core-1.0.102.js:17294 ====
+==== core-1.1.0.js:17294 ====
 return { assets: this.assets, media: this.media.filter((e) => !e.preset), sequence: this.sequence };
 
-==== ui-1.0.72.js:2783 ====
+==== ui-1.1.0.js:2783 ====
 .filter(this.options.childFilter)
 
-==== ui-1.0.72.js:2784 ====
+==== ui-1.1.0.js:2784 ====
 .filter((e) => e.visible !== false);
 
-==== ui-1.0.72.js:2867 ====
+==== ui-1.1.0.js:2867 ====
 .filter(this.options.objectFilter)
 
-==== ui-1.0.72.js:2868 ====
+==== ui-1.1.0.js:2868 ====
 .map(this.options.objectMap);
 
-==== ui-1.0.72.js:2994 ====
+==== ui-1.1.0.js:2994 ====
 : Array.from(this.list.children).map((e) => e.pz_object);
 
-==== ui-1.0.72.js:3044 ====
+==== ui-1.1.0.js:3044 ====
 e = Array.from(e).map((e) => e.pz_object);
 
-==== ui-1.0.72.js:4899 ====
+==== ui-1.1.0.js:4899 ====
 let e = i.pz_oldValue.slice();
 
-==== ui-1.0.72.js:5491 ====
+==== ui-1.1.0.js:5491 ====
 ("0" + i).slice(-2) +
 
-==== ui-1.0.72.js:5493 ====
+==== ui-1.1.0.js:5493 ====
 ("0" + t).slice(-2) +
 
-==== ui-1.0.72.js:5495 ====
+==== ui-1.1.0.js:5495 ====
 ("0" + e.toFixed(3)).slice(-6)
 
-==== ui-1.0.72.js:5718 ====
+==== ui-1.1.0.js:5718 ====
 let t = this.objects.filter((e) => e.object instanceof PZ.layer.scene);
 
-==== ui-1.0.72.js:6266 ====
+==== ui-1.1.0.js:6266 ====
 .slice(e.indexOf("(") + 1, -1)
 
-==== ui-1.0.72.js:6268 ====
+==== ui-1.1.0.js:6268 ====
 .map((e) => parseFloat(e));
 
-==== ui-1.0.72.js:6273 ====
+==== ui-1.1.0.js:6273 ====
 return (t = t.slice(0, this.alpha ? 4 : 3));
 
-==== ui-1.0.72.js:6383 ====
+==== ui-1.1.0.js:6383 ====
 this.setValue(this.initialValue.slice());
 
-==== ui-1.0.72.js:6479 ====
+==== ui-1.1.0.js:6479 ====
 this.initialValue = this.value.slice();
 
-==== ui-1.0.72.js:6501 ====
+==== ui-1.1.0.js:6501 ====
 PZ.ui.colorPicker.recentColors.push(this.value.slice());
 
-==== ui-1.0.72.js:6682 ====
+==== ui-1.1.0.js:6682 ====
 .slice(e.indexOf("(") + 1, -1)
 
-==== ui-1.0.72.js:6684 ====
+==== ui-1.1.0.js:6684 ====
 .map((e) => parseFloat(e));
 
-==== ui-1.0.72.js:6939 ====
+==== ui-1.1.0.js:6939 ====
 .slice(e.indexOf("(") + 1, -1)
 
-==== ui-1.0.72.js:6941 ====
+==== ui-1.1.0.js:6941 ====
 .map((e) => parseFloat(e));
 
-==== ui-1.0.72.js:7633 ====
+==== ui-1.1.0.js:7633 ====
 i.controlPoints[0].slice(),
 
-==== ui-1.0.72.js:7634 ====
+==== ui-1.1.0.js:7634 ====
 i.controlPoints[1].slice(),
 
-==== ui-1.0.72.js:7671 ====
+==== ui-1.1.0.js:7671 ====
 let t = i.controlPoints[0].slice();
 
-==== ui-1.0.72.js:7672 ====
+==== ui-1.1.0.js:7672 ====
 let s = i.controlPoints[1].slice();
 
-==== ui-1.0.72.js:8737 ====
+==== ui-1.1.0.js:8737 ====
 ("0" + i).slice(-2) +
 
-==== ui-1.0.72.js:8739 ====
+==== ui-1.1.0.js:8739 ====
 ("0" + t).slice(-2) +
 
-==== ui-1.0.72.js:8741 ====
+==== ui-1.1.0.js:8741 ====
 ("0" + e.toFixed(3)).slice(-6)
 
-==== ui-1.0.72.js:8752 ====
+==== ui-1.1.0.js:8752 ====
 ("0" + i).slice(-2) +
 
-==== ui-1.0.72.js:8754 ====
+==== ui-1.1.0.js:8754 ====
 ("0" + t).slice(-2) +
 
-==== ui-1.0.72.js:8756 ====
+==== ui-1.1.0.js:8756 ====
 ("0" + e).slice(-2) +
 
-==== ui-1.0.72.js:8758 ====
+==== ui-1.1.0.js:8758 ====
 ("0" + n).slice(-2)
 
-==== ui-1.0.72.js:9004 ====
+==== ui-1.1.0.js:9004 ====
 (a = a.filter(
 
-==== ui-1.0.72.js:9299 ====
+==== ui-1.1.0.js:9299 ====
 i[t.pz_object.definition.name] = n.map((e) => e.pz_object);
 
-==== ui-1.0.72.js:9664 ====
+==== ui-1.1.0.js:9664 ====
 let o = new Set(r.map((e) => e.pz_object));
 
-==== ui-1.0.72.js:10105 ====
+==== ui-1.1.0.js:10105 ====
 s.clips.push(...t.map((e) => e.pz_object));
 
-==== ui-1.0.72.js:10119 ====
+==== ui-1.1.0.js:10119 ====
 s.clips.push(...t.map((e) => e.pz_object));
 
-==== ui-1.0.72.js:10237 ====
+==== ui-1.1.0.js:10237 ====
 e = Array.from(e).map((e) => e.pz_object);
 
-==== ui-1.0.72.js:12272 ====
+==== ui-1.1.0.js:12272 ====
 this.initialValue = this.property.get(this.frame).slice();
 
-==== ui-1.0.72.js:12314 ====
+==== ui-1.1.0.js:12314 ====
 this.initialValue = this.initialValue.slice();
 
-==== ui-1.0.72.js:12920 ====
+==== ui-1.1.0.js:12920 ====
 this.connections = this.connections.filter(
 
-==== ui-1.0.72.js:13020 ====
+==== ui-1.1.0.js:13020 ====
 const t = this.connections.filter(
 
-==== ui-1.0.72.js:13212 ====
+==== ui-1.1.0.js:13212 ====
 .filter(
 
-==== ui-1.0.72.js:13216 ====
+==== ui-1.1.0.js:13216 ====
 .map((e) => ({
 
-==== ui-1.0.72.js:13734 ====
+==== ui-1.1.0.js:13734 ====
 .map((e) => e.name)
 
-==== ui-1.0.72.js:13774 ====
+==== ui-1.1.0.js:13774 ====
 .map((e) => e.name)
 
-==== ui-1.0.72.js:13876 ====
+==== ui-1.1.0.js:13876 ====
 this.tags.map((e) => (e.includes(" ") ? `"${e}"` : e)).join(",")
 
-==== ui-1.0.72.js:13958 ====
+==== ui-1.1.0.js:13958 ====
 .filter((e) => !!e)
 
-==== ui-1.0.72.js:13959 ====
+==== ui-1.1.0.js:13959 ====
 .map((e) => e[0].toUpperCase() + e.substr(1))
 
-==== ui-1.0.72.js:14006 ====
+==== ui-1.1.0.js:14006 ====
 return e.map(s.util.encode);
 
-==== ui-1.0.72.js:14234 ====
+==== ui-1.1.0.js:14234 ====
 P = e.slice(x, C);
 
-==== ui-1.0.72.js:14245 ====
+==== ui-1.1.0.js:14245 ====
 E = (k = T.index + y) + (T = T[0].slice(y)).length;
 
-==== ui-1.0.72.js:14246 ====
+==== ui-1.1.0.js:14246 ====
 var _ = P.slice(0, k);
 
-==== ui-1.0.72.js:14247 ====
+==== ui-1.1.0.js:14247 ====
 var j = P.slice(E);
 
-==== ui-1.0.72.js:14318 ====
+==== ui-1.1.0.js:14318 ====
 .map(function (i) {
 
-==== ui-1.0.72.js:14338 ====
+==== ui-1.1.0.js:14338 ====
 .map(function (e) {
 
-==== ui-1.0.72.js:15232 ====
+==== ui-1.1.0.js:15232 ====
 let o = new Set(s.map((e) => e.pz_object));
 
-==== ui-1.0.72.js:16064 ====
+==== ui-1.1.0.js:16064 ====
 i[t.pz_object.definition.name] = s.map((e) => e.pz_object);
 
-==== ui-1.0.72.js:16317 ====
+==== ui-1.1.0.js:16317 ====
 .map((e) => e.clips)
 
-==== ui-1.0.72.js:16320 ====
+==== ui-1.1.0.js:16320 ====
 .map((e) => e.clips)
 
-==== ui-1.0.72.js:16406 ====
+==== ui-1.1.0.js:16406 ====
 .map((e) => e.clips)
 
-==== ui-1.0.72.js:16426 ====
+==== ui-1.1.0.js:16426 ====
 .map((e) => e.clips)
 
-==== ui-1.0.72.js:16429 ====
+==== ui-1.1.0.js:16429 ====
 .map((e) => e.clips)
 
-==== ui-1.0.72.js:16455 ====
+==== ui-1.1.0.js:16455 ====
 .map((e) => e.clips)
 
-==== ui-1.0.72.js:16458 ====
+==== ui-1.1.0.js:16458 ====
 .map((e) => e.clips)
 
-==== ui-1.0.72.js:16514 ====
+==== ui-1.1.0.js:16514 ====
 .map((e) => e.clips)
 
-==== ui-1.0.72.js:16542 ====
+==== ui-1.1.0.js:16542 ====
 .map((e) => e.clips)

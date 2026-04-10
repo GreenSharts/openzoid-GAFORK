@@ -15,4 +15,4 @@ function searchFile(filename) {
   }
 }
 
-searchFile('ui-1.0.72.js');
+searchFile('ui-1.1.0.js');

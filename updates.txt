@@ -1,4 +1,4 @@
-==== core-1.0.102.js:16135 ====
+==== core-1.1.0.js:16135 ====
                 }
             } else if (this.el) {
                 let e = this.currentItem.clip.properties.time.get(i);
@@ -19,7 +19,7 @@
             }
             return null !== r && ++t[e].idx >= t[e].track.clips.length && t.splice(e, 1), r;
         }
-==== core-1.0.102.js:17363 ====
+==== core-1.1.0.js:17363 ====
     (PZ.assetList.prototype.removeIfUnused = function (e) {
         e.references <= 0 &&
             e.mediaReferences <= 0 &&
@@ -40,7 +40,7 @@
         for (var t = Object.keys(this.list), r = 0; r < t.length; r++) this.list[t[r]].save(e);
     }),
     (PZ.sequence = class extends PZ.object {
-==== core-1.0.102.js:17366 ====
+==== core-1.1.0.js:17366 ====
             (e.source === PZ.asset.source.FILE && e.url && URL.revokeObjectURL(e.url),
             delete this.list[e.key],
             this.onAssetRemoved.update(e));
@@ -61,7 +61,7 @@
         constructor() {
             super(),
                 PZ.observable.defineObservableProp(this, "length", "onLengthChanged"),
-==== core-1.0.102.js:17423 ====
+==== core-1.1.0.js:17423 ====
                 videoTracks: this.videoTracks,
                 audioTracks: this.audioTracks,
                 clipLinks: this.clipLinks,
@@ -82,7 +82,7 @@
             name: "Resolution",
             type: PZ.property.type.VECTOR2,
             spaceChar: "x",
-==== core-1.0.102.js:17424 ====
+==== core-1.1.0.js:17424 ====
                 audioTracks: this.audioTracks,
                 clipLinks: this.clipLinks,
             };
@@ -103,7 +103,7 @@
             type: PZ.property.type.VECTOR2,
             spaceChar: "x",
             value: [1920, 1080],
-==== core-1.0.102.js:17427 ====
+==== core-1.1.0.js:17427 ====
         }
         update(e) {
             for (let t = 0; t < this.videoTracks.length; t++) this.videoTracks[t].update(e);
@@ -124,7 +124,7 @@
             decimals: 0,
             max: 4e3,
             min: 1,
-==== core-1.0.102.js:17518 ====
+==== core-1.1.0.js:17518 ====
                     let i = PZ.clip.create(r, e.clips[t].object.type);
                     this.clips.push(i), i.load(e.clips[t]);
                 }
@@ -145,7 +145,7 @@
     }),
     (PZ.track.audio.prototype.type = 1),
     (PZ.track.video = class extends PZ.track {
-==== core-1.0.102.js:17583 ====
+==== core-1.1.0.js:17583 ====
             };
         }
         unload() {
@@ -166,7 +166,7 @@
             type: PZ.property.type.ASSET,
             assetType: PZ.asset.type.AV,
             value: null,
-==== core-1.0.102.js:17720 ====
+==== core-1.1.0.js:17720 ====
         }
         unload() {
             this.parentProject.assets.unload(this.vertShader), this.parentProject.assets.unload(this.fragShader);
@@ -187,7 +187,7 @@
             for (var r = 0; r < this.effects.length; r++)
                 await this.effects[r].loading, await this.effects[r].prepare(e, t);
         }
-==== core-1.0.102.js:17728 ====
+==== core-1.1.0.js:17728 ====
             let r = this.properties.rotation.get(e);
             this.composite.group.rotation.z = r;
             let i = this.properties.scale.get(e);
@@ -208,7 +208,7 @@
         { name: "src over", value: "BLEND_SRC_OVER" },
         { name: "dest over", value: "BLEND_DST_OVER" },
         { name: "src in", value: "BLEND_SRC_IN" },
-==== core-1.0.102.js:17924 ====
+==== core-1.1.0.js:17924 ====
         }
         async prepare(e, t) {
             for (let r = 0; r < this.objects.length; r++) await this.objects[r].prepare(e, t);
@@ -229,7 +229,7 @@
                 this.properties.load(e && e.properties),
                 (this.threeObj = new THREE.Scene()),
                 (this.envMap = new PZ.envMap(this)),
-==== core-1.0.102.js:17925 ====
+==== core-1.1.0.js:17925 ====
         async prepare(e, t) {
             for (let r = 0; r < this.objects.length; r++) await this.objects[r].prepare(e, t);
             await super.prepare(e, t);
@@ -250,7 +250,7 @@
                 (this.threeObj = new THREE.Scene()),
                 (this.envMap = new PZ.envMap(this)),
                 (this.motionBlur = new PZ.motionBlur(this)),
-==== core-1.0.102.js:17926 ====
+==== core-1.1.0.js:17926 ====
             for (let r = 0; r < this.objects.length; r++) await this.objects[r].prepare(e, t);
             await super.prepare(e, t);
         }
@@ -271,7 +271,7 @@
                 (this.envMap = new PZ.envMap(this)),
                 (this.motionBlur = new PZ.motionBlur(this)),
                 (this.videoMaterials = []),
-==== core-1.0.102.js:17961 ====
+==== core-1.1.0.js:17961 ====
         }
         toJSON() {
             var e = super.toJSON();
@@ -292,7 +292,7 @@
         constructor() {
             super(), (this.image = null);
         }
-==== core-1.0.102.js:17962 ====
+==== core-1.1.0.js:17962 ====
         toJSON() {
             var e = super.toJSON();
             return (e.objects = this.objects), e;
@@ -313,7 +313,7 @@
             super(), (this.image = null);
         }
         load(e) {
-==== core-1.0.102.js:17963 ====
+==== core-1.1.0.js:17963 ====
             var e = super.toJSON();
             return (e.objects = this.objects), e;
         }
@@ -334,7 +334,7 @@
         }
         load(e) {
             if (
-==== core-1.0.102.js:17964 ====
+==== core-1.1.0.js:17964 ====
             return (e.objects = this.objects), e;
         }
         update(e) {
@@ -355,7 +355,7 @@
         load(e) {
             if (
                 (super.load(e),
-==== core-1.0.102.js:18040 ====
+==== core-1.1.0.js:18040 ====
         }
         async prepare(e, t) {
             for (var r = 0; r < this.objects.length; r++) await this.objects[r].prepare(e, t);
@@ -376,7 +376,7 @@
     }),
     (PZ.layer.shape.prototype.defaultName = "Shape"),
     (PZ.layer.shape.preset = class extends PZ.layer.shape {
-==== core-1.0.102.js:18041 ====
+==== core-1.1.0.js:18041 ====
         async prepare(e, t) {
             for (var r = 0; r < this.objects.length; r++) await this.objects[r].prepare(e, t);
             await super.prepare(e, t);
@@ -397,7 +397,7 @@
     (PZ.layer.shape.prototype.defaultName = "Shape"),
     (PZ.layer.shape.preset = class extends PZ.layer.shape {
         constructor() {
-==== core-1.0.102.js:18081 ====
+==== core-1.1.0.js:18081 ====
             this.composite.quad.scale.set(r[0], r[1], 1),
                 (this.properties.position.visible = false),
                 (this.properties.scale.visible = false),
@@ -418,7 +418,7 @@
                 case 0:
                     e.path.draw = function (e) {
                         e.beginPath(), e.ellipse(0, 0, 100, 100, 0, 0, 2 * Math.PI);
-==== core-1.0.102.js:18082 ====
+==== core-1.1.0.js:18082 ====
                 (this.properties.position.visible = false),
                 (this.properties.scale.visible = false),
                 (this.properties.rotation.visible = false);
@@ -439,7 +439,7 @@
                     e.path.draw = function (e) {
                         e.beginPath(), e.ellipse(0, 0, 100, 100, 0, 0, 2 * Math.PI);
                     };
-==== core-1.0.102.js:18158 ====
+==== core-1.1.0.js:18158 ====
             return (e.objects = [PZ.shape.prototype.toJSON.call(this.objects[0])]), e;
         }
         unload() {
@@ -460,7 +460,7 @@
         updateShapes() {
             if (!this.font || !this.font.font2d) return;
             let e = this.font.font2d,
-==== core-1.0.102.js:18161 ====
+==== core-1.1.0.js:18161 ====
             this.font && this.parentProject.assets.unload(this.font), super.unload();
         }
         update(e) {
@@ -481,7 +481,7 @@
                 t = this.textProperties.size.get() / e.unitsPerEm,
                 r = this.textProperties.text.get(),
                 i = e.stringToGlyphs(r),
-==== core-1.0.102.js:18420 ====
+==== core-1.1.0.js:18420 ====
         }
         unload() {
             for (var e = 0; e < this.objects.length; e++) this.objects[e].unload();
@@ -502,7 +502,7 @@
     }),
     (PZ.effect.shader = class extends PZ.effect {
         constructor() {
-==== core-1.0.102.js:18422 ====
+==== core-1.1.0.js:18422 ====
             for (var e = 0; e < this.objects.length; e++) this.objects[e].unload();
         }
         resize() {}
@@ -523,7 +523,7 @@
         constructor() {
             super(),
                 (this.textures = new Map()),
-==== core-1.0.102.js:18536 ====
+==== core-1.1.0.js:18536 ====
         }
         resize() {
             let e = this.parentLayer.properties.resolution.get();
@@ -544,7 +544,7 @@
                     const t = Object.keys(this.pass.material.defines).length;
                     (e = e.replace(/ERROR: 0:(\d+):/, (e, r) => `ERROR: 0:${parseInt(r) - t}:`)),
                         this.onShaderError.update(e),
-==== core-1.0.102.js:18550 ====
+==== core-1.1.0.js:18550 ====
             ) {
                 if (!this.fragmentShaderHasError) {
                     let e = this.pass.material.program.diagnostics.fragmentShader.log;
@@ -565,7 +565,7 @@
                 Array.isArray(i) ? a.value.set(...i) : (a.value = i);
             }
         }
-==== core-1.0.102.js:18712 ====
+==== core-1.1.0.js:18712 ====
         }
         toJSON() {
             return { type: this.type, objectType: this.objectType, properties: this.properties };
@@ -586,7 +586,7 @@
                 (this.threeObj.intensity = this.properties.intensity.get(e)),
                 this.properties.angle && (this.threeObj.angle = (this.properties.angle.get(e) * Math.PI) / 180);
         }
-==== core-1.0.102.js:18879 ====
+==== core-1.1.0.js:18879 ====
             return { type: this.type, objectType: this.objectType, properties: this.properties };
         }
         unload() {
@@ -607,7 +607,7 @@
             let t = "Model";
             switch (((this.objectType = e), (this.threeObj = new THREE.Object3D()), this.objectType)) {
                 case 1:
-==== core-1.0.102.js:19385 ====
+==== core-1.1.0.js:19385 ====
             this.colorTex.dispose(),
                 this.sizeTex.dispose(),
                 this.texture &&
@@ -628,7 +628,7 @@
             type: PZ.property.type.GRADIENT,
             value: [{ position: 0, color: "rgba(255,255,255,1.0)" }],
             changed: function () {
-==== core-1.0.102.js:19691 ====
+==== core-1.1.0.js:19691 ====
         unload() {
             this.customGeometry &&
                 (this.parentProject.assets.unload(this.customGeometry), this.threeObj.geometry.dispose()),
@@ -649,7 +649,7 @@
             this.customGeometry && (await this.customGeometry.loading),
                 this.material && (await this.material.loading, await this.material.prepare(e));
         }
-==== core-1.0.102.js:19700 ====
+==== core-1.1.0.js:19700 ====
                 this.threeObj.position.set(t[0], t[1], t[2]),
                 (t = this.properties.rotation.get(e)),
                 this.threeObj.rotation.set(t[0], t[1], t[2]),
@@ -670,7 +670,7 @@
             if (99 === this.objectType)
                 return void this.customGeometry.getGeometry().then((e) => {
                     this.updateGeometry(e);
-==== core-1.0.102.js:20178 ====
+==== core-1.1.0.js:20178 ====
             return { type: this.type, properties: this.properties, material: this.material };
         }
         unload() {
@@ -691,7 +691,7 @@
         async prepare(e) {
             this.font && (await this.font.loading3d),
                 this.material && (await this.material.loading, await this.material.prepare(e));
-==== core-1.0.102.js:20188 ====
+==== core-1.1.0.js:20188 ====
                 this.threeObj.position.set(t[0], t[1], t[2]),
                 (t = this.properties.rotation.get(e)),
                 this.threeObj.rotation.set(t[0], t[1], t[2]),
@@ -712,7 +712,7 @@
                     t.x -= t.x;
                     break;
                 case 2:
-==== core-1.0.102.js:20416 ====
+==== core-1.1.0.js:20416 ====
             };
         }
         unload() {
@@ -733,7 +733,7 @@
             for (var t = 0; t < this.objects.length; t++) await this.objects[t].prepare(e);
         }
     }),
-==== core-1.0.102.js:20425 ====
+==== core-1.1.0.js:20425 ====
                 this.threeObj.position.set(t[0], t[1], t[2]),
                 (t = this.properties.rotation.get(e)),
                 this.threeObj.rotation.set(t[0], t[1], t[2]),
@@ -754,7 +754,7 @@
             value: 0,
             changed: function () {
                 let e = this.parentObject;
-==== core-1.0.102.js:20583 ====
+==== core-1.1.0.js:20583 ====
                     (this.threeObj.right = 0.05 * t),
                     (this.threeObj.top = 0.05 * r),
                     (this.threeObj.bottom = -0.05 * r);

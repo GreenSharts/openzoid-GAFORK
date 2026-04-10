@@ -8,7 +8,7 @@ const assert = require('assert');
  */
 function loadPanzoid() {
     const coreFile = fs.readdirSync(path.join(__dirname, '..')).find(f => f.startsWith('core-') && f.endsWith('.js'));
-    const uiFile = fs.readdirSync(path.join(__dirname, '..')).find(f => f.startsWith('ui-1.0.72.js')); // Use specific version if needed but let's try to find it dynamically
+    const uiFile = fs.readdirSync(path.join(__dirname, '..')).find(f => f.startsWith('ui-1.1.0.js')); // Use specific version if needed but let's try to find it dynamically
 
     // Re-fallback for core and ui files
     const allFiles = fs.readdirSync(path.join(__dirname, '..'));
@@ -24,7 +24,7 @@ function loadPanzoid() {
 
     // Define global objects needed by the scripts
     global.PZ = { ui: {} };
-    global.PZVERSION = "1.0.102";
+    global.PZVERSION = "1.1.0";
     global.window = {
         addEventListener: () => {},
         removeEventListener: () => {}

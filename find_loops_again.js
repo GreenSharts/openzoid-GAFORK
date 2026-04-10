@@ -14,4 +14,4 @@ function searchFile(filename) {
   }
 }
 
-searchFile('core-1.0.102.js');
+searchFile('core-1.1.0.js');

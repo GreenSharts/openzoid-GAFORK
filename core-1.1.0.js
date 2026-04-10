@@ -1,4 +1,4 @@
-const PZVERSION = "1.0.102";
+const PZVERSION = "1.1.0";
 THREE.OBJLoader = function (e) {
     this.manager = undefined !== e ? e : THREE.DefaultLoadingManager;
     this.materials = null;
