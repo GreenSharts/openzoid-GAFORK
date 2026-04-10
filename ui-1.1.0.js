@@ -1,4 +1,4 @@
-const PZUIVERSION = "1.0.72";
+const PZUIVERSION = "1.1.0";
 
 THREE.EditorControls = function (camera, canvas) {
     function onMouseDown(mouse) {

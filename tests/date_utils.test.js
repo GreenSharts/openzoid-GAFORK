@@ -7,13 +7,13 @@ const vm = require('vm');
 // 1. Mock PZ object
 const PZ = {};
 
-// 2. Load the actual code from ui-1.0.72.js
-const uiCode = fs.readFileSync(path.join(__dirname, '../ui-1.0.72.js'), 'utf8');
+// 2. Load the actual code from ui-1.1.0.js
+const uiCode = fs.readFileSync(path.join(__dirname, '../ui-1.1.0.js'), 'utf8');
 
 // Use regex to extract the PZ.dateString function from the source file
 const match = uiCode.match(/PZ\.dateString\s*=\s*function\s*\(e\)\s*\{[\s\S]*?\};/);
 if (!match) {
-    throw new Error("Could not find PZ.dateString in ui-1.0.72.js");
+    throw new Error("Could not find PZ.dateString in ui-1.1.0.js");
 }
 
 // Evaluate the extracted function in a controlled context

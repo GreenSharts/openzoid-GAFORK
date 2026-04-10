@@ -1,6 +1,6 @@
-const PZTOOLVERSION = "3.0.106";
+const PZTOOLVERSION = "3.1.0";
 var CM = new PZ.ui.editor();
-CM.name = "openzoid (Clipmaker 3)";
+CM.name = "openzoid GA (Clipmaker 3.1)";
 async function initTool() {
     let currentAccount = await PZ.account.getCurrent();
     CM.setUpEditor(currentAccount);
