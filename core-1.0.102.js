@@ -16577,7 +16577,19 @@ PZ.compositor.prototype = {
         await this.uploadFile(s, o);
     }),
     (PZ.motionBlur = function (e) {
-        (this.layer = e), (this.scene = e.threeObj), (this.references = 0), (this.prevModelViewMatrix = new WeakMap());
+        (this.layer = e),
+            (this.scene = e.threeObj),
+            (this.references = 0),
+            (this.prevModelViewMatrix = new WeakMap()),
+            (this._updateObjectMatrix = (e) => {
+                let t = this.prevModelViewMatrix.get(e);
+                t || ((t = new THREE.Matrix4()), this.prevModelViewMatrix.set(e, t)),
+                    t.multiplyMatrices(this.layer.pass.camera.matrixWorldInverse, e.matrixWorld),
+                    e.onBeforeRender ||
+                        (e.onBeforeRender = (e, r, i, a, s, n) => {
+                            s === this.velocityShader && s.uniforms.prevModelViewMatrix.value.copy(t);
+                        });
+            });
     }),
     (PZ.motionBlur.prototype.vertexShader = [
         "uniform mat4 prevModelViewMatrix;",
@@ -16637,15 +16649,7 @@ PZ.compositor.prototype = {
     (PZ.motionBlur.prototype.update = function (e) {
         if (this.velocityBuffer) {
             for (let t = 0; t < this.layer.objects.length; t++) this.layer.objects[t].update(e + 0.5);
-            this.scene.updateMatrixWorld(),
-                this.scene.traverse((e) => {
-                    let t = this.prevModelViewMatrix.get(e);
-                    t || ((t = new THREE.Matrix4()), this.prevModelViewMatrix.set(e, t)),
-                        t.multiplyMatrices(this.layer.pass.camera.matrixWorldInverse, e.matrixWorld),
-                        (e.onBeforeRender = (e, r, i, a, s, n) => {
-                            s === this.velocityShader && s.uniforms.prevModelViewMatrix.value.copy(t);
-                        });
-                });
+            this.scene.updateMatrixWorld(), this.scene.traverse(this._updateObjectMatrix);
         }
     }),
     (PZ.motionBlur.prototype.render = function (e) {
