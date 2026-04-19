@@ -5,3 +5,7 @@
 ## 2024-05-24 - [Shape Drawing Memoization]
 **Learning:** Redundant `Math.cos` and `Math.sin` calls in `PZ.shape.path.draw` can be avoided by memoizing the results based on the rotation value.
 **Action:** Implement instance-level caching for expensive calculations in hot rendering loops.
+
+## 2026-04-13 - [Motion Blur Allocation Bottleneck]
+**Learning:** High-frequency loops like `scene.traverse` in `PZ.motionBlur.prototype.update` suffer from significant overhead when creating new arrow functions and closures for `onBeforeRender` every frame, even if the actual `Matrix4` objects are cached.
+**Action:** Pre-bind traversal callbacks in the constructor and conditionally assign object hooks (`onBeforeRender`) only once to eliminate per-frame allocations.
