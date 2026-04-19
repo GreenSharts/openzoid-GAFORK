@@ -343,14 +343,14 @@ CM.setUpEditor = function (currentAccount) {
         { separator: true },
         {
             title: "action / title safe guides",
-            icon: "add", // FIXME PLACEHOLDER
+            icon: "guides",
             fn: function () {
                 // TODO
             }
         },
         {
             title: "grid",
-            icon: "add", // FIXME PLACEHOLDER
+            icon: "grid",
             fn: function () {
                 // TODO
             }

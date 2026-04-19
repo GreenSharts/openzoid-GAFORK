@@ -502,4 +502,10 @@
         <path d="M90 50c0-18.856-17.909-40-40-40S10 27.909 10 50s21.144 40 40 40 40-21.144 40-40zM50 78.571c-15.754 0-28.571-12.817-28.571-28.571 0-15.754 12.817-28.571 28.571-28.571 15.754 0 28.571 12.817 28.571 28.571 0 15.754-12.817 28.571-28.571 28.571z" />
         <path d="M32.857 44.286h34.286v11.429H32.857z" />
     </symbol>
+    <symbol viewBox="0 0 100 100" id="guides">
+        <path d="M5 5h90v90H5V5zm2 2v86h86V7H7zm5 5h76v76H12V12zm2 2v72h72V14H14z" fill-rule="evenodd" />
+    </symbol>
+    <symbol viewBox="0 0 100 100" id="grid">
+        <path d="M5 5v90h90V5H5zm3 3h26v26H8V8zm29 0h26v26H37V8zm29 0h26v26H66V8zM8 37h26v26H8V37zm29 0h26v26H37V37zm29 0h26v26H66V37zM8 66h26v26H8V66zm29 0h26v26H37V66zm29 0h26v26H66V66z" fill-rule="evenodd" />
+    </symbol>
 </svg>
