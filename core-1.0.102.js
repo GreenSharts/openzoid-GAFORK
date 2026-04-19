@@ -14823,11 +14823,6 @@ PZ.av.encode = async function (e, t) {
             (Wr.prototype.toTables = function () {
                 return gt.fontToTable(this);
             }),
-            (Wr.prototype.toBuffer = function () {
-                return (
-                    console.warn("Font.toBuffer is deprecated. Use Font.toArrayBuffer instead."), this.toArrayBuffer()
-                );
-            }),
             (Wr.prototype.toArrayBuffer = function () {
                 for (
                     var e = this.toTables().encode(), t = new ArrayBuffer(e.length), r = new Uint8Array(t), i = 0;
