@@ -1655,8 +1655,17 @@ PZ.ui.editor.prototype.save = async function (e) {
     if (i) {
         PZ.downloadBlob = i;
         PZ.downloadFilename = "project.pz";
+        let url = URL.createObjectURL(i);
+        let a = document.createElement("a");
+        a.href = url;
+        a.download = PZ.downloadFilename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function() {
+            URL.revokeObjectURL(url);
+        }, 1000);
     }
-    window.open("download.html");
     this.project.ui.dirty = false;
 };
 
@@ -13487,8 +13496,19 @@ PZ.ui.export.device = class {
                 {
                     title: "Download your video",
                     clickfn: function () {
-                        open("download.html", "_blank");
-                    },
+                        if (PZ.downloadBlob) {
+                            let url = URL.createObjectURL(PZ.downloadBlob);
+                            let a = document.createElement("a");
+                            a.href = url;
+                            a.download = PZ.downloadFilename || "video." + this.params.format;
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            setTimeout(function() {
+                                URL.revokeObjectURL(url);
+                            }, 1000);
+                        }
+                    }.bind(this),
                 },
                 this
             )
@@ -13671,8 +13691,19 @@ PZ.ui.export.frame = class {
                 {
                     title: "Download your image",
                     clickfn: function () {
-                        open("download.html", "_blank");
-                    },
+                        if (PZ.downloadBlob) {
+                            let url = URL.createObjectURL(PZ.downloadBlob);
+                            let a = document.createElement("a");
+                            a.href = url;
+                            a.download = PZ.downloadFilename || "image." + this.params.format;
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            setTimeout(function() {
+                                URL.revokeObjectURL(url);
+                            }, 1000);
+                        }
+                    }.bind(this),
                 },
                 this
             )
