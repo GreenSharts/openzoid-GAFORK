@@ -12695,6 +12695,23 @@ PZ.ui.export.html = class {
         #playBtn:hover { background: rgba(255,255,255,0.3); }
     </style>
     <script>${(await (await fetch('three.r91.min.js')).text()).replace(/<\/script>/g, '<\\/script>')}</script>
+    <script>
+        var PZ = {};
+        PZ.stringHash = function (str) {
+            var hash = 0;
+            if (str.length === 0) return hash;
+            for (var i = 0; i < str.length; i++) {
+                hash = (hash << 5) - hash + str.charCodeAt(i);
+                hash |= 0;
+            }
+            return hash;
+        };
+        PZ.apiOrigin = "";
+        PZ.blobOrigin = "";
+        PZ.account = { updatePromise: null };
+        PZ.account.getCurrent = async function () { return null; };
+        PZ.api = async function () {};
+    </script>
     <script>${(await (await fetch('core-1.0.102.js')).text()).replace(/<\/script>/g, '<\\/script>')}</script>
 </head>
 <body>
