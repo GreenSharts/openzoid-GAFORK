@@ -12502,6 +12502,7 @@ PZ.ui.export = class extends PZ.ui.panel.nav {
         this.icon = "export";
         this.cloudExport = new PZ.ui.export.cloud(this);
         this.deviceExport = new PZ.ui.export.device(this);
+        this.htmlExport = new PZ.ui.export.html(this);
         this.frameExport = new PZ.ui.export.frame(this);
         Object.assign(this, t);
         this.create();
@@ -12549,7 +12550,244 @@ PZ.ui.export = class extends PZ.ui.panel.nav {
             this.navigate(this.frameExport.createOptionsPage(), true);
         }.bind(this);
         e.appendChild(r);
+                var btnHtml = document.createElement("button");
+        btnHtml.classList.add("pz-option");
+        var iconHtml = PZ.ui.generateIcon("website");
+        iconHtml.style = "fill:#ccc;width:60px;height:60px;flex: 0 0 60px;margin-right: 10px";
+        btnHtml.appendChild(iconHtml);
+        var divHtml = document.createElement("div");
+        divHtml.style = "display:inline-block";
+        divHtml.appendChild(document.createTextNode("HTML render"));
+        var spanHtml = document.createElement("span");
+        spanHtml.innerText = "Export your animation as a standalone HTML file.";
+        divHtml.appendChild(spanHtml);
+        btnHtml.appendChild(divHtml);
+        btnHtml.onclick = function () {
+            this.navigate(this.htmlExport.createOptionsPage(), true);
+        }.bind(this);
+        e.appendChild(btnHtml);
         return e;
+    }
+};
+
+PZ.ui.export.html = class {
+    constructor(e) {
+        this.export = e;
+        this.editor = this.export.editor;
+        this.params = null;
+    }
+    createOptionsPage() {
+        let e = this.export.createPage("HTML render", true, () => true);
+        e.appendChild(PZ.ui.controls.legacy.generateDescription({
+            content: "Export your animation as a standalone HTML file. Audio and textures will be converted to Base64 data URIs so that it is self-contained."
+        }));
+        e.appendChild(PZ.ui.controls.legacy.generateSpacer());
+        e.appendChild(
+            PZ.ui.controls.legacy.generateButton(
+                {
+                    title: "Start",
+                    clickfn: async function () {
+                        this.export.navigate(this.createProgressPage(), true);
+                    }.bind(this),
+                },
+                this
+            )
+        );
+        return e;
+    }
+    createProgressPage() {
+        let e = this.export.createPage("Rendering...", true, () => true);
+        e.appendChild(
+            PZ.ui.controls.legacy.generateDescription({
+                content: "Your HTML file is being generated. Please wait...",
+            })
+        );
+        this.render().then((blob) => {
+            if (blob) {
+                PZ.downloadBlob = blob;
+                PZ.downloadFilename = "animation.html";
+                this.export.navigate(this.createFinishedPage());
+            } else {
+                this.export.navigate(this.createErrorPage("Failed to generate HTML."));
+            }
+        });
+        return e;
+    }
+    createFinishedPage() {
+        let e = this.export.createPage("Render complete", true, () => (this.renderCleanUp(), true));
+        e.appendChild(
+            PZ.ui.controls.legacy.generateDescription({
+                content: "Your HTML render is finished! Click below to download.",
+            })
+        );
+        e.appendChild(PZ.ui.controls.legacy.generateSpacer());
+        e.appendChild(
+            PZ.ui.controls.legacy.generateButton(
+                {
+                    title: "Download your animation",
+                    clickfn: function () {
+                        if (PZ.downloadBlob) {
+                            let url = URL.createObjectURL(PZ.downloadBlob);
+                            let a = document.createElement("a");
+                            a.href = url;
+                            a.download = PZ.downloadFilename || "animation.html";
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+                        }
+                    }.bind(this),
+                },
+                this
+            )
+        );
+        return e;
+    }
+    createErrorPage(e) {
+        let t = this.export.createPage("Render error", true, () => (this.renderCleanUp(), true));
+        t.appendChild(
+            PZ.ui.controls.legacy.generateDescription({
+                content: 'Unfortunately, your render could not be completed. Sorry about that.<span style="display:block;margin-top:20px;color:#666">Error: ' + e + "</span>",
+            })
+        );
+        return t;
+    }
+    renderCleanUp() {
+        PZ.downloadBlob = null;
+        this.editor.enabled = true;
+        this.editor.playback.enabled = true;
+    }
+    async render() {
+        let projectJsonStr = JSON.stringify(this.editor.project.toJSON());
+        let projJson = JSON.parse(projectJsonStr);
+        let assets = this.editor.project.assets.list;
+
+        for (let key in assets) {
+            let asset = assets[key];
+            if (asset.file) {
+                let base64 = await new Promise((resolve) => {
+                    let reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = () => resolve(null);
+                    reader.readAsDataURL(asset.file);
+                });
+                if (base64 && projJson.assets && projJson.assets[key]) {
+                    projJson.assets[key].url = base64;
+                    projJson.assets[key].source = 3; // PZ.asset.source.PRESET
+                    projJson.assets[key].external = true;
+                }
+            }
+        }
+
+        let htmlStr = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Exported Animation</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #000; font-family: sans-serif; }
+        canvas { display: block; width: 100vw; height: 100vh; }
+        #playBtn {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+            color: white; font-size: 24px; cursor: pointer;
+            background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px;
+        }
+        #playBtn:hover { background: rgba(255,255,255,0.3); }
+    </style>
+    <script>${(await (await fetch('three.r91.min.js')).text()).replace(/<\/script>/g, '<\\/script>')}</script>
+    <script>${(await (await fetch('core-1.0.102.js')).text()).replace(/<\/script>/g, '<\\/script>')}</script>
+</head>
+<body>
+    <canvas id="c"></canvas>
+    <div id="playBtn">Play Animation</div>
+    <script>
+        var projectData = ${JSON.stringify(projJson)};
+        var canvas = document.getElementById("c");
+        var renderer = new THREE.WebGLRenderer({ canvas: canvas });
+
+        function resize() { renderer.setSize(window.innerWidth, window.innerHeight); }
+        window.addEventListener('resize', resize); resize();
+
+        document.getElementById('playBtn').addEventListener('click', function() {
+            this.style.display = 'none';
+
+            var project = new PZ.project();
+            project.load(projectData);
+
+            var res = project.sequence.properties.resolution.get();
+            var compositor = new PZ.compositor(renderer, res[0], res[1]);
+            compositor.sequence = project.sequence;
+
+            var frame = 0;
+            var rate = project.sequence.properties.rate.get() || 30;
+            var lastTime = performance.now();
+
+            // Audio setup
+            var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            var attachedSchedules = new Set();
+
+            function loop() {
+                requestAnimationFrame(loop);
+                var now = performance.now();
+                var dt = (now - lastTime) / 1000;
+                lastTime = now;
+
+                frame += dt * rate;
+                if (frame >= project.sequence.length) {
+                    frame = 0;
+                }
+
+                compositor.renderSequence(frame);
+
+                project.sequence.update(frame, true);
+
+                // Update audio elements volume/pan based on current frame
+                var rate = project.sequence.properties.rate.get() || 30;
+                var schedules = project.sequence.audioSchedules;
+                for (var i = 0; i < schedules.length; i++) {
+                    var s = schedules[i];
+                    var time = frame / rate;
+                    if (frame >= s.offset && frame < s.offset + s.length) {
+                        if (!attachedSchedules.has(s)) {
+                            s.sourceNode = audioCtx.createMediaElementSource(s.el);
+                            if (audioCtx.createStereoPanner) {
+                                s.panNode = audioCtx.createStereoPanner();
+                            }
+                            s.gainNode = audioCtx.createGain();
+                            s.sourceNode.connect(s.gainNode);
+                            if (s.panNode) {
+                                s.gainNode.connect(s.panNode);
+                                s.panNode.connect(audioCtx.destination);
+                            } else {
+                                s.gainNode.connect(audioCtx.destination);
+                            }
+                            attachedSchedules.add(s);
+                        }
+
+                        var f = frame - s.offset;
+                        if(s.el.paused) {
+                            var p = s.el.play();
+                            if (p !== undefined) p.catch(e => {});
+                        }
+
+                        // Update volume and pan
+                        if (s.gainNode) {
+                            var vol = s.clip.properties.volume.get(f);
+                            s.gainNode.gain.setValueAtTime(vol, audioCtx.currentTime);
+                        }
+                        if (s.panNode) {
+                            var pan = s.clip.properties.pan.get(f);
+                            s.panNode.pan.setValueAtTime(pan, audioCtx.currentTime);
+                        }
+                    }
+                }
+            }
+            loop();
+        });
+    </script>
+</body>
+</html>`;
+        return new Blob([htmlStr], { type: 'text/html' });
     }
 };
 PZ.ui.export.resolutions = [
