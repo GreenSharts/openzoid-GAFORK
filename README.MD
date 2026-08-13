@@ -34,6 +34,25 @@ https://panzoid.com/community/search/85948?q=user%3ARedTubePoop
 
 https://panzoid.com/community/18345
 
+## AI agent
+
+openzoid ships with an optional AI agent that builds and edits the project for you. Open the lightbulb tab in the sidebar, paste an API key, and describe what you want — "make a spinning intro that says my name", "add a glow to the title", "slow the whole thing down".
+
+**Providers.** Either works, pick one in the settings:
+
+| Provider | Get a key | Default model |
+| --- | --- | --- |
+| Anthropic | [console.anthropic.com](https://console.anthropic.com/) | `claude-opus-5` |
+| Google (Gemini) | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) | `gemini-2.5-pro` |
+
+Paste a key and the provider switches to match it automatically (Anthropic keys start with `sk-ant-`, Google keys with `AIza`). The **Model** field is free text, so you can point it at any model the provider offers. Each provider keeps its own key, model and endpoint, so switching between them doesn't lose your settings.
+
+**How it works.** The agent doesn't write into the project file directly. It drives the same undoable command layer the UI uses (`PZ.ui.properties`, `PZ.ui.timeline.tracks`), so everything it does shows up live in the timeline and property panels. It can also render a frame and look at it, which is how it checks its own work instead of animating blind. **Everything the agent does in one reply is a single undo step** — one ctrl+Z takes it all back, which makes it safe to just try things.
+
+**About the API key.** openzoid is deliberately a pile of static files with no server, so there is nowhere server-side to keep a key. Yours is stored in this browser's `localStorage` and sent straight from the page to the provider. If you would rather it not live in the browser, point the **Endpoint** field in the agent settings at your own proxy instead.
+
+Files: `agent/tools.js` (the tool surface over the editor), `agent/client.js` (the agent loop and one adapter per provider), `agent/panel.js` (the UI). Adding a provider means implementing the small adapter interface documented at the top of `client.js` — the loop and the tools are shared.
+
 ## Current issues
 - There is a **memory leaking issue that causes performance issues over time**, but currently it is unknown whether this is caused by unminified branch or archive branch. If the origin is in archive, it's an upstream problem and will likely be fixed in main. If the origin is in unminified, it's a downstream problem, meaning something changed functionally, and a lot of work will have to be done to undo that...
 
