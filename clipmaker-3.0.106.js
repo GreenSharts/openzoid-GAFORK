@@ -109,7 +109,7 @@ CM.setUpEditor = function (currentAccount) {
     menuBarEffects.icon = "fx";
     menuBarEffectsTop.objects = timeline.tracks.selection;
     menuBarEffectsBottom.objects = menuBarEffectsTop.selection;
-    let menuBar = [new PZ.ui.media(CM), menuBarSequence, menuBarEdit, menuBarObjects, menuBarEffects, new PZ.ui.export(CM), new PZ.ui.about(CM)];
+    let menuBar = [new PZ.ui.media(CM), menuBarSequence, menuBarEdit, menuBarObjects, menuBarEffects, new PZ.ui.export(CM), new PZ.ui.agent(CM), new PZ.ui.about(CM)];
     let menuBarElevator = new PZ.ui.elevator(CM, menuBar);
     let viewport = new PZ.ui.viewport(CM, {
         helper3dObjects: menuBarObjectsTop.selection,
@@ -361,6 +361,9 @@ CM.setUpEditor = function (currentAccount) {
     let toolbarMenuBarSplit = new PZ.ui.splitPanel(CM, toolbar, menuBarElevator, 0, 0);
 
     splitPanelViewport = viewport;
+
+    // Give the AI agent access to the editor and the viewport it renders from.
+    PZ.agent.attach(CM, { viewport: viewport, timeline: timeline });
 
     let splitPanelTimeline = new PZ.ui.splitPanel(CM, timeline, audioMeter, 1, 1);
     let splitPanelBottom = new PZ.ui.splitPanel(CM, transportBarToolbar, splitPanelTimeline, 0, 0);
