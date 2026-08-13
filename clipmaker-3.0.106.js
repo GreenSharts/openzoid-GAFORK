@@ -109,7 +109,11 @@ CM.setUpEditor = function (currentAccount) {
     menuBarEffects.icon = "fx";
     menuBarEffectsTop.objects = timeline.tracks.selection;
     menuBarEffectsBottom.objects = menuBarEffectsTop.selection;
-    let menuBar = [new PZ.ui.media(CM), menuBarSequence, menuBarEdit, menuBarObjects, menuBarEffects, new PZ.ui.export(CM), new PZ.ui.agent(CM), new PZ.ui.about(CM)];
+    let menuBar = [new PZ.ui.media(CM), menuBarSequence, menuBarEdit, menuBarObjects, menuBarEffects, new PZ.ui.export(CM), new PZ.ui.about(CM)];
+    // The AI agent is optional: if agent.js is missing or failed to parse, the
+    // editor still loads without it rather than dying here.
+    if (PZ.ui.agent) menuBar.splice(menuBar.length - 1, 0, new PZ.ui.agent(CM));
+    else console.warn("openzoid: agent.js did not load; the AI panel is unavailable.");
     let menuBarElevator = new PZ.ui.elevator(CM, menuBar);
     let viewport = new PZ.ui.viewport(CM, {
         helper3dObjects: menuBarObjectsTop.selection,
@@ -363,7 +367,7 @@ CM.setUpEditor = function (currentAccount) {
     splitPanelViewport = viewport;
 
     // Give the AI agent access to the editor and the viewport it renders from.
-    PZ.agent.attach(CM, { viewport: viewport, timeline: timeline });
+    if (PZ.agent && PZ.agent.attach) PZ.agent.attach(CM, { viewport: viewport, timeline: timeline });
 
     let splitPanelTimeline = new PZ.ui.splitPanel(CM, timeline, audioMeter, 1, 1);
     let splitPanelBottom = new PZ.ui.splitPanel(CM, transportBarToolbar, splitPanelTimeline, 0, 0);
