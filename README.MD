@@ -34,6 +34,22 @@ https://panzoid.com/community/search/85948?q=user%3ARedTubePoop
 
 https://panzoid.com/community/18345
 
+## Mobile editor
+
+`mobile.html` is a touch editor for phones, built on the same Clipmaker 3 engine. Phones that open `index.html` or `clipmaker.html` are sent there automatically. Add `?desktop` to the URL to keep the desktop layout. Tablets keep the desktop layout by default.
+
+The layout follows phone video editors: the preview on top, a timeline with a fixed centre playhead underneath, a tool strip along the bottom, and panels that slide up over the timeline while the preview stays visible. Everything is in Panzoid's colours and icons.
+
+- **Timeline.** Scroll it sideways to scrub, pinch to zoom. Tap a clip to select it, drag the white handles to trim, and long-press then drag to move it in time or onto another layer. Clips snap to the playhead and to each other's edges. An imported video's sound moves, trims, splits and deletes with it.
+- **Preview.** With a clip selected, drag on the preview to move it, pinch to scale and twist to rotate. Tap to play or pause.
+- **Tools.** Import (video, photos, audio, `.pz`), Library, Text, Shapes, Effects (adds an adjustment layer carrying the effect), 3D, Audio, Composite, Canvas (aspect ratio and frame rate) and AI. A selected clip gets Edit, Split, Speed, Volume, Effects, Opacity, Keyframe, Duplicate and Delete.
+- **Keyframes.** The ◆ button adds or removes a keyframe for position, scale, rotation and opacity at the playhead. Move the playhead, drag the layer, and it animates.
+- **Full editing.** Edit, Effects, Objects, Export and AI embed the desktop panels as they are, so every property, effect and export option is still reachable.
+
+Imported videos and photos are scaled to fit the canvas, the way phone editors do. Panzoid itself places them at their pixel size.
+
+Edits go through the same undoable commands as the desktop timeline, so projects open in either editor and undo behaves the same. On a phone you can also "Add to Home Screen" to run it full screen like an app. `tests/mobile_ui.test.js` drives the whole thing in an emulated phone when Playwright is installed.
+
 ## AI agent
 
 openzoid ships with an optional AI agent that builds and edits the project for you. Open the lightbulb tab in the sidebar, paste an API key, and describe what you want — "make a spinning intro that says my name", "add a glow to the title", "slow the whole thing down".
@@ -42,7 +58,7 @@ openzoid ships with an optional AI agent that builds and edits the project for y
 
 | Provider | Get a key | Default model |
 | --- | --- | --- |
-| Anthropic | [console.anthropic.com](https://console.anthropic.com/) | `claude-opus-5` |
+| Anthropic | [console.anthropic.com](https://console.anthropic.com/) | `claude-opus-5-5` |
 | Google (Gemini) | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) | `gemini-2.5-pro` |
 
 Paste a key and the provider switches to match it automatically (Anthropic keys start with `sk-ant-`, Google keys with `AIza`). The **Model** field is free text, so you can point it at any model the provider offers. Each provider keeps its own key, model and endpoint, so switching between them doesn't lose your settings.
@@ -51,7 +67,11 @@ Paste a key and the provider switches to match it automatically (Anthropic keys 
 
 **About the API key.** openzoid is deliberately a pile of static files with no server, so there is nowhere server-side to keep a key. Yours is stored in this browser's `localStorage` and sent straight from the page to the provider. If you would rather it not live in the browser, point the **Endpoint** field in the agent settings at your own proxy instead.
 
-Files: `agent/tools.js` (the tool surface over the editor), `agent/client.js` (the agent loop and one adapter per provider), `agent/panel.js` (the UI). Adding a provider means implementing the small adapter interface documented at the top of `client.js` — the loop and the tools are shared.
+**What it can do.** Beyond adding layers and setting properties, the agent can add any of the editor's effects (80+, including the Panzoid+ shader pack), build 3D scenes (shapes, 3D text, lights, cameras, materials), duplicate and retime clips, animate with named easings ("back out", "elastic out"…), set many properties in one call, and render a contact sheet of several frames to check motion and timing.
+
+**Use it from Claude Desktop, Claude Code or any MCP client.** `mcp/server.js` is a dependency-free MCP server that exposes the same tools to an external client and relays them to the open editor tab. Register it with your client, then open `http://127.0.0.1:7823/clipmaker.html?mcp`. The server also serves the editor, so you don't need a separate web server. No API key is needed in the browser for this. See [mcp/README.md](mcp/README.md).
+
+Everything lives in `agent.js`, in four self-contained sections: the tool surface over the editor, the agent loop with one adapter per provider, the MCP bridge, and the chat panel. Adding a provider means implementing the small adapter interface described in the client section. The loop and the tools are shared.
 
 ## Current issues
 - There is a **memory leaking issue that causes performance issues over time**, but currently it is unknown whether this is caused by unminified branch or archive branch. If the origin is in archive, it's an upstream problem and will likely be fixed in main. If the origin is in unminified, it's a downstream problem, meaning something changed functionally, and a lot of work will have to be done to undo that...
