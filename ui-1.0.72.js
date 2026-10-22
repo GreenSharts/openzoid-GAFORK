@@ -12662,6 +12662,41 @@ PZ.ui.export.html = class {
         let projJson = JSON.parse(projectJsonStr);
         let assets = this.editor.project.assets.list;
 
+        let filesToFetch = new Set();
+        let addFile = (file) => filesToFetch.add(file);
+
+        function findDependencies(obj) {
+            if (Array.isArray(obj)) {
+                obj.forEach(findDependencies);
+            } else if (obj && typeof obj === 'object') {
+                if (obj.effects && Array.isArray(obj.effects)) {
+                    obj.effects.forEach(e => {
+                        if (typeof e.type === 'string') addFile("effect/" + e.type.replace(/[^a-zA-Z0-9]/g, "") + ".js");
+                    });
+                }
+                if (obj.material && typeof obj.material.type === 'string') {
+                    addFile("material/" + obj.material.type.replace(/[^a-zA-Z0-9]/g, "") + ".js");
+                }
+                // no object3d loading needed since 'object3d/' folder doesn't exist.
+                if (obj.materials && Array.isArray(obj.materials)) {
+                    obj.materials.forEach(m => {
+                        if (typeof m.type === 'string') addFile("material/" + m.type.replace(/[^a-zA-Z0-9]/g, "") + ".js");
+                    });
+                }
+                // we'll traverse to look for nested structures like layers/objects
+                for (let key in obj) {
+                    if (key !== 'parent' && key !== 'parentObject' && typeof obj[key] === 'object') {
+                        findDependencies(obj[key]);
+                    }
+                }
+            }
+        }
+        findDependencies(projJson);
+        addFile("assets/shaders/vertex/common.glsl");
+        addFile("assets/shaders/fragment/blend.glsl");
+        addFile("assets/shaders/vertex/remap.glsl");
+        addFile("assets/shaders/fragment/fx_shader.glsl");
+
         for (let key in assets) {
             let asset = assets[key];
             if (asset.file) {
@@ -12676,6 +12711,21 @@ PZ.ui.export.html = class {
                     projJson.assets[key].source = 3; // PZ.asset.source.PRESET
                     projJson.assets[key].external = true;
                 }
+            } else if (asset.source === 3 && asset.url) { // PZ.asset.source.PRESET
+                let url = asset.url.startsWith('/') ? asset.url.substring(1) : asset.url;
+                addFile(url);
+            }
+        }
+
+        let fileCache = {};
+        for (let file of filesToFetch) {
+            try {
+                let res = await fetch(PZ.apiOrigin + '/' + file);
+                if (res.ok) {
+                    fileCache[file] = await res.text();
+                }
+            } catch (e) {
+                console.error("Failed to fetch", file, e);
             }
         }
 
@@ -12711,6 +12761,25 @@ PZ.ui.export.html = class {
         PZ.account = { updatePromise: null };
         PZ.account.getCurrent = async function () { return null; };
         PZ.api = async function () {};
+    </script>
+    <script>
+        var fileCache = ${JSON.stringify(fileCache).replace(/<\/script>/g, '<\\/script>')};
+        var originalFetch = window.fetch;
+        window.fetch = async function(url, options) {
+            let path = typeof url === 'string' ? url : (url && url.url ? url.url : '');
+            if (path.startsWith(PZ.apiOrigin + '/')) {
+                path = path.substring(PZ.apiOrigin.length + 1);
+            } else if (path.startsWith(PZ.apiOrigin)) {
+                path = path.substring(PZ.apiOrigin.length);
+            }
+            if (path.startsWith('/')) {
+                path = path.substring(1);
+            }
+            if (fileCache[path]) {
+                return new Response(fileCache[path], {status: 200, statusText: "OK"});
+            }
+            return originalFetch(url, options);
+        };
     </script>
     <script>${(await (await fetch('core-1.0.102.js')).text()).replace(/<\/script>/g, '<\\/script>')}</script>
 </head>
